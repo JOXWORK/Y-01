@@ -1,0 +1,91 @@
+services:
+  app:
+    restart: always
+    build:
+      dockerfile: ./docker-build/Dockerfile
+      context: ./
+      target: app
+    environment:
+      APPLICATION__DB__URL: postgresql+asyncpg://user:password@pg:5432/fastapi_application
+    depends_on:
+      pg:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    develop:
+      watch:
+        # - action: sync+restart
+        - action: sync
+          path: ./application
+          target: /application
+        - action: rebuild
+          path: ./poetry.lock
+        - action: rebuild
+          path: ./pyproject.toml
+
+
+  worker:
+    restart: always
+    build:
+      dockerfile: ./docker-build/Dockerfile
+      context: ./
+      target: worker
+    depends_on:
+      - redis
+      - pg
+    command: taskiq worker core.taskiq.broker:broker core.tasks
+    scale: 1
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./application/core/tasks
+          target: /application/core/tasks
+        - action: sync+restart
+          path: ./application/core/taskiq
+          target: /application/core/taskiq
+
+
+  pg:
+    image: postgres:17.6
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: fastapi_application
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "user", "-d", "fastapi_application"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    image: elestio/pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 8080
+    depends_on:
+      pg:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+
+  redis:
+    image: redis:8.6.3-trixie
+    restart: always
+    depends_on:
+      pg:
+        condition: service_healthy
+    ports:
+    - "6379:6379"
+
+volumes:
+  pgdata:

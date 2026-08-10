@@ -1,0 +1,15 @@
+# Auto detect text files and perform LF normalization
+; * text=auto
+
+# SH scripts
+*.sh text eol=lf
+
+# Python main func executable file 
+run text eol=lf
+
+# Dockerfile
+Dockerfile text eol=lf
+
+# YAML confs
+*.yml text eol=lf
+*.yaml text eol=lf
