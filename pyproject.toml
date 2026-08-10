@@ -1,5 +1,5 @@
 [project]
-name = "fastapi-application"
+name = "application"
 version = "0.1.0"
 description = ""
 authors = [
@@ -22,7 +22,8 @@ dependencies = [
     "httpx (>=0.28.1,<0.29.0)",
     "fastapi-users[sqlalchemy] (>=15.0.5,<16.0.0)",
     "pytest-asyncio (>=1.4.0,<2.0.0)",
-    "pytest-order (>=1.5.0,<2.0.0)"
+    "pytest-order (>=1.5.0,<2.0.0)",
+    "openai (>=2.53.0,<3.0.0)"
 ]
 
 
