@@ -79,7 +79,7 @@ class RedisConfig(BaseModel):
 
 
 class RedisDB(BaseModel):
-    cache: RedisConfig
+    rate_limit: RedisConfig
     taskiq: RedisConfig
 
 

@@ -2,6 +2,6 @@ import redis.asyncio as redis
 
 from core.config import settings
 
-redis_cache = redis.from_url(
-    settings.redis.cache.url,
+r = redis.from_url(
+    settings.redis.rate_limit.url,
 )
