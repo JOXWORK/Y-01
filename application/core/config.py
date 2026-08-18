@@ -129,6 +129,20 @@ class HTTPBearerSchemeSettings(BaseModel):
     auto_error: bool = False
 
 
+class RateLimitEndpoint(BaseModel):
+    max_amount: int
+    timeout: int  # seconds
+
+
+class RateLimitSettings(BaseModel):
+    foo_test: RateLimitEndpoint = RateLimitEndpoint(
+        max_amount=1,
+        timeout=120,
+    )
+
+    hmac_secret: str
+
+
 class Settings(BaseSettings):
     ROOT_DIR: Path = ROOT_DIR
 
@@ -154,6 +168,8 @@ class Settings(BaseSettings):
     taskiq: TaskiqConfig = TaskiqConfig()
 
     auth: AuthSettings
+
+    rate_limit: RateLimitSettings
 
 
 ## Допустимо передовать в env_file кортеж из нескольких .env файлов, перегружающих друг друга и значения конфига.
