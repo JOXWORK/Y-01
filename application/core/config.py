@@ -23,6 +23,7 @@ class ApiV1Prefix(BaseModel):
     router_v1: str = "/v1"
     hello_world: str = "/hello_world"
     auth: str = "/auth"
+    auth_test: str = "/auth-test"
 
     @property
     def bearer_transport(self):
@@ -41,6 +42,7 @@ class ApiV1Prefix(BaseModel):
 class ApiV1Tags(BaseModel):
     hello_world: list[str] = ["Test routes"]
     auth: list[str] = ["Auth"]
+    auth_test: list[str] = ["Auth test"]
 
 
 class ApiV1Summary(BaseModel):
@@ -136,7 +138,7 @@ class RateLimitEndpoint(BaseModel):
 
 class RateLimitSettings(BaseModel):
     foo_test: RateLimitEndpoint = RateLimitEndpoint(
-        max_amount=1,
+        max_amount=10,
         timeout=120,
     )
 
