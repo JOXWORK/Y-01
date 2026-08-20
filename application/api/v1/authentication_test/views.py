@@ -13,5 +13,10 @@ router = APIRouter()
 
 
 @router.get("/is-user-valid")
-async def abbab(user: User = Depends(fastapi_current_user)):
+async def is_user_valid(user: User = Depends(fastapi_current_user)):
     return {"is_valid": True}
+
+
+@router.post("/rate-limit")
+async def rate_limit_endpoint(user: User = Depends(fastapi_current_user)):
+    return {"message": "succsessful"}
