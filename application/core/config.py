@@ -132,14 +132,16 @@ class HTTPBearerSchemeSettings(BaseModel):
 
 
 class RateLimitEndpoint(BaseModel):
-    max_amount: int
+    limit: int
     timeout: int  # seconds
+    endpoint_name: str
 
 
 class RateLimitSettings(BaseModel):
-    foo_test: RateLimitEndpoint = RateLimitEndpoint(
-        max_amount=10,
-        timeout=120,
+    rate_limit_test: RateLimitEndpoint = RateLimitEndpoint(
+        limit=3,
+        timeout=10,
+        endpoint_name="rate-limit-test",
     )
 
     hmac_secret: str
