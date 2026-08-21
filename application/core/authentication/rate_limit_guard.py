@@ -65,8 +65,6 @@ class RateLimitGuard:
 
         try:
             result = await func(*args, **kwargs)
-        except HTTPException as exc:
-            raise exc
         finally:
             await self.redis_client.incr(query)
             await self.redis_client.expire(name=query, time=timeout)
