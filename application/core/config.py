@@ -140,7 +140,7 @@ class RateLimitEndpoint(BaseModel):
 class RateLimitSettings(BaseModel):
     rate_limit_test: RateLimitEndpoint = RateLimitEndpoint(
         limit=3,
-        timeout=10,
+        timeout=3600,
         endpoint_name="rate-limit-test",
     )
 
