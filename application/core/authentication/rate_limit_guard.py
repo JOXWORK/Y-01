@@ -11,10 +11,11 @@ from core.config import settings
 from core.redis.rate_limit import r as ratelimit_redis
 
 if TYPE_CHECKING:
-    from typing import Coroutine
+    from typing import Callable, Coroutine
 
     from redis.asyncio import Redis as AsyncRedis
 
+    from core.config import RateLimitEndpoint
     from core.models.user import User
 
 
@@ -26,19 +27,19 @@ class RateLimitGuard:
         self.redis_client = redis_client
         self.redis_formula = "rate_limit:%s:%s"  ## rate_limit:endpoint_name:user_identifier_digest
 
-    def keep_rate_limit(self, kwarg_target: str = "user") -> Coroutine:
-        def decorator(coru: Coroutine) -> Coroutine:
+    def keep_rate_limit(self, kwarg_target: str = "user") -> Callable:
+        def decorator(func: Callable) -> Callable:
             timeout = settings.rate_limit.rate_limit_test.timeout
             limit = settings.rate_limit.rate_limit_test.limit
             endpoint_name = settings.rate_limit.rate_limit_test.endpoint_name
 
-            @wraps(coru)
+            @wraps(func)
             async def wrapper(*args, **kwargs):
                 auth_sub: User = kwargs[kwarg_target]
                 user_id = auth_sub.id
 
                 return await self._keep(
-                    coru,
+                    func,
                     args,
                     kwargs,
                     user_identifier=user_id,
@@ -51,8 +52,14 @@ class RateLimitGuard:
 
         return decorator
 
+    def keep_rate_limit_(self, kwarg_schema: str, endpoint_config: RateLimitEndpoint):
+        def decorator(func: Callable) -> Callable:
+            @wraps(func)
+            async def wrapper(*args, **kwargs):
+                pass
+
     async def _keep(
-        self, coru: Coroutine, args, kwargs, /, user_identifier: str | int, endpoint_name: str, timeout: int, limit: int
+        self, func: Callable, args, kwargs, /, user_identifier: str | int, endpoint_name: str, timeout: int, limit: int
     ) -> any:
         query = await self._generate_redis_query(
             endpoint_name=endpoint_name,
@@ -66,7 +73,7 @@ class RateLimitGuard:
                 raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS)
 
         try:
-            result = await coru(*args, **kwargs)
+            result = await func(*args, **kwargs)
         finally:
             await self.redis_client.incr(query)
             await self.redis_client.expire(name=query, time=timeout)
@@ -75,8 +82,8 @@ class RateLimitGuard:
 
     def _prototype_keep_user_identifier(
         self, user_identifier: str, endpoint_name: str, rate_limit: int, redis_ex: int
-    ) -> Coroutine:
-        def decorator(func: Coroutine) -> Coroutine:
+    ) -> Callable:
+        def decorator(func: Callable) -> Callable:
             @wraps(func)
             async def wrapper(*args, **kwargs):
                 if user_identifier_ := kwargs.get(user_identifier) is None:
@@ -145,6 +152,13 @@ class RateLimitGuard:
         )
 
         return self.redis_formula % (endpoint_name, user_identifier_digest.hexdigest())
+
+    async def _pick_kwarg(self, kwargs: dict, kwarg_schema: str):
+        kwarg_way = kwarg_schema.split(".")
+        kwarg_sub = kwargs[kwarg_way[0]]
+
+        if len(kwarg_way) == 1:
+            return kwarg_sub
 
 
 rate_limit_guard = RateLimitGuard(redis_client=ratelimit_redis)
