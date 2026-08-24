@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from core.config import RateLimitEndpoint, RateLimitSettings
 
 
-class RateLimitGuard:
+class RateLimiter:
     def __init__(
         self,
         redis_client: AsyncRedis,
@@ -28,7 +28,7 @@ class RateLimitGuard:
         self.redis_formula = "rate_limit:%s:%s"  ## rate_limit:operation_name:user_identifier_digest
         self.config = config
 
-    def keep_limit(self, kwarg_schema: str, endpoint_cfg: RateLimitEndpoint):
+    def restrain(self, kwarg_schema: str, endpoint_cfg: RateLimitEndpoint):
         def decorator(func: Callable) -> Callable:
             @wraps(func)
             async def wrapper(*args, **kwargs):
@@ -37,7 +37,7 @@ class RateLimitGuard:
                     kwarg_schema=kwarg_schema,
                 )
 
-                return await self._keep(
+                return await self._restrain(
                     func,
                     args,
                     kwargs,
@@ -51,7 +51,7 @@ class RateLimitGuard:
 
         return decorator
 
-    async def _keep(
+    async def _restrain(
         self, func: Callable, args, kwargs, /, user_identifier: str | int, operation_name: str, timeout: int, limit: int
     ) -> any:
         query = await self._generate_redis_query(
@@ -107,7 +107,7 @@ class RateLimitGuard:
         return auth_sub
 
 
-rate_limit_guard = RateLimitGuard(
+rate_limiter = RateLimiter(
     redis_client=ratelimit_redis,
     config=settings.rate_limit,
 )
