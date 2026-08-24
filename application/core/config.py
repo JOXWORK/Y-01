@@ -134,20 +134,27 @@ class HTTPBearerSchemeSettings(BaseModel):
 class RateLimitEndpoint(BaseModel):
     limit: int
     timeout: int  # seconds
-    endpoint_name: str
 
 
 class RateLimitSettings(BaseModel):
-    rate_limit_test: RateLimitEndpoint = RateLimitEndpoint(
+    rate_limit: RateLimitEndpoint = RateLimitEndpoint(
         limit=3,
         timeout=3600,
-        endpoint_name="rate-limit-test",
+    )
+
+    user_email_rate_limit: RateLimitEndpoint = RateLimitEndpoint(
+        limit=1,
+        timeout=600,
+    )
+
+    pydantic_schema_rate_limit: RateLimitEndpoint = RateLimitEndpoint(
+        limit=4,
+        timeout=10,
     )
 
     request_verify_token: RateLimitEndpoint = RateLimitEndpoint(
         limit=1,
         timeout=600,
-        endpoint_name="request-verify-token",
     )
 
     hmac_secret: str
