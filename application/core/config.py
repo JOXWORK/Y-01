@@ -144,6 +144,12 @@ class RateLimitSettings(BaseModel):
         endpoint_name="rate-limit-test",
     )
 
+    request_verify_token: RateLimitEndpoint = RateLimitEndpoint(
+        limit=1,
+        timeout=600,
+        endpoint_name="request-verify-token",
+    )
+
     hmac_secret: str
 
 
