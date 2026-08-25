@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from fastapi import HTTPException, status
 
 from core.config import settings
-from core.redis.rate_limit import r as ratelimit_redis
+from core.redis import rd_attach
 
 if TYPE_CHECKING:
     from typing import Callable
@@ -28,7 +28,7 @@ class RateLimiter:
         self.redis_formula = "rate_limit:%s:%s"  ## rate_limit:operation_name:user_identifier_digest
         self.config = config
 
-    def restrain(self, kwarg_schema: str, endpoint_cfg: RateLimitEndpoint):
+    def restrain(self, kwarg_schema: str, endpoint_cfg: RateLimitEndpoint) -> Callable:
         def decorator(func: Callable) -> Callable:
             @wraps(func)
             async def wrapper(*args, **kwargs):
@@ -108,6 +108,6 @@ class RateLimiter:
 
 
 rate_limiter = RateLimiter(
-    redis_client=ratelimit_redis,
+    redis_client=rd_attach.rate_limit,
     config=settings.rate_limit,
 )
