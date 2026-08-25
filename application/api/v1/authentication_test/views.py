@@ -10,14 +10,14 @@ from api.dependencies.auth import fastapi_current_user
 if TYPE_CHECKING:
     from core.models.user import User
 
-from .responses import SuccessfulResponse
+from .responses import IsUserValidResponse, SuccessfulResponse
 from .schemas import BaseCredentialsSchema
 
 router = APIRouter()
 
 
 @router.get("/is-user-valid")
-async def is_user_valid(user: User = Depends(fastapi_current_user)):
+async def is_user_valid(user: User = Depends(fastapi_current_user)) -> IsUserValidResponse:
     return {"is_valid": True}
 
 
