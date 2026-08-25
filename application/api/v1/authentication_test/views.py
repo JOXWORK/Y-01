@@ -10,6 +10,7 @@ from api.dependencies.auth import fastapi_current_user
 if TYPE_CHECKING:
     from core.models.user import User
 
+from .responses import SuccessfulResponse
 from .schemas import BaseCredentialsSchema
 
 router = APIRouter()
@@ -25,8 +26,8 @@ async def is_user_valid(user: User = Depends(fastapi_current_user)):
     kwarg_schema="user.id",
     endpoint_cfg=rate_limiter.config.rate_limit,
 )
-async def rate_limit(user: User = Depends(fastapi_current_user)):
-    return {"message": "succsessful"}
+async def rate_limit(user: User = Depends(fastapi_current_user)) -> SuccessfulResponse:
+    return {"successful": True}
 
 
 @router.post("/user-email-rate-limit")
@@ -34,7 +35,7 @@ async def rate_limit(user: User = Depends(fastapi_current_user)):
     kwarg_schema="user.email",
     endpoint_cfg=rate_limiter.config.user_email_rate_limit,
 )
-async def user_email_rate_limit(user: User = Depends(fastapi_current_user)):
+async def user_email_rate_limit(user: User = Depends(fastapi_current_user)) -> SuccessfulResponse:
     return {"successful": True}
 
 
@@ -43,5 +44,5 @@ async def user_email_rate_limit(user: User = Depends(fastapi_current_user)):
     kwarg_schema="base_credentials.email",
     endpoint_cfg=rate_limiter.config.pydantic_schema_rate_limit,
 )
-async def pydantic_schema_rate_limit(base_credentials: BaseCredentialsSchema):
+async def pydantic_schema_rate_limit(base_credentials: BaseCredentialsSchema) -> SuccessfulResponse:
     return {"successful": True}
