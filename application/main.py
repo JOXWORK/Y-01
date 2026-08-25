@@ -4,6 +4,7 @@ import uvicorn
 from api import router as api_router
 from core.config import settings
 from core.models import db_attach
+from core.redis import rd_attach
 from fastapi import FastAPI
 
 
@@ -12,6 +13,7 @@ async def lifespan(app: FastAPI):
     # startup
     yield
     # shutdown
+    await rd_attach.dispose()
     await db_attach.dispose()
 
 
