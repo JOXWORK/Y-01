@@ -5,7 +5,6 @@ from api import router as api_router
 from core.config import settings
 from core.models import db_attach
 from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse
 
 
 @asynccontextmanager
@@ -18,7 +17,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     lifespan=lifespan,
-    default_response_class=ORJSONResponse,
 )
 app.include_router(router=api_router)
 
