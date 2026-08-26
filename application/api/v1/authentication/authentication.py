@@ -5,6 +5,7 @@ from fastapi.security import HTTPBearer
 
 from api.dependencies.auth.backend import auth_backend
 from api.dependencies.auth.fastapi_users_instance import fastapi_users
+from api.dependencies.auth.routers.register_own import get_register_router
 from api.dependencies.auth.routers.reset_own import get_reset_password_router
 from api.dependencies.auth.routers.verify_own import get_verify_router
 
@@ -20,7 +21,11 @@ router.include_router(
 )
 
 router.include_router(
-    fastapi_users.get_register_router(user_schema=UserRead, user_create_schema=UserCreate),
+    get_register_router(
+        user_schema=UserRead,
+        user_create_schema=UserCreate,
+        get_user_manager=fastapi_users.get_user_manager,
+    ),
 )
 
 router.include_router(
