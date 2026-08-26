@@ -137,6 +137,8 @@ class RateLimitEndpoint(BaseModel):
 
 
 class RateLimitSettings(BaseModel):
+    hmac_secret: str
+
     rate_limit: RateLimitEndpoint = RateLimitEndpoint(
         limit=3,
         timeout=3600,
@@ -157,7 +159,10 @@ class RateLimitSettings(BaseModel):
         timeout=600,
     )
 
-    hmac_secret: str
+    forgot_password: RateLimitEndpoint = RateLimitEndpoint(
+        limit=1,
+        timeout=600,
+    )
 
 
 class Settings(BaseSettings):
