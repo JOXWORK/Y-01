@@ -164,6 +164,11 @@ class RateLimitSettings(BaseModel):
         timeout=600,
     )
 
+    register: RateLimitEndpoint = RateLimitEndpoint(
+        limit=2,
+        timeout=60,
+    )
+
 
 class Settings(BaseSettings):
     ROOT_DIR: Path = ROOT_DIR
