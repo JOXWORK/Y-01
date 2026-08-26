@@ -7,8 +7,8 @@ from pydantic import EmailStr
 
 
 def get_verify_router(
-    get_user_manager: UserManagerDependency[models.UP, models.ID],
     user_schema: type[schemas.U],
+    get_user_manager: UserManagerDependency[models.UP, models.ID],
 ):
     router = APIRouter()
 
