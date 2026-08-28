@@ -7,6 +7,7 @@ from .user_session import UserSession
 from .access_token import AccessToken
 from .db_attach import db_attach
 from .refresh_token import RefreshToken
+from .moderation_rule import ModerationRule
 
 
 __all__ = (
@@ -17,4 +18,5 @@ __all__ = (
     "AccessToken",
     "UserSession",
     "RefreshToken",
+    "ModerationRule",
 )
