@@ -5,8 +5,8 @@ services:
       dockerfile: ./docker-build/Dockerfile
       context: ./
       target: app
-    environment:
-      APPLICATION__DB__URL: postgresql+asyncpg://user:password@pg:5432/fastapi_application
+    # environment:
+    #   APPLICATION__DB__URL: postgresql+asyncpg://u:pwd@host:1234/name
     depends_on:
       pg:
         condition: service_healthy
