@@ -43,7 +43,7 @@ class RateLimiter:
                     kwargs,
                     user_identifier=auth_sub,
                     operation_name=func.__name__,
-                    timeout=endpoint_cfg.timeout,
+                    timeout_sec=endpoint_cfg.timeout_sec,
                     limit=endpoint_cfg.limit,
                 )
 
@@ -52,7 +52,15 @@ class RateLimiter:
         return decorator
 
     async def _restrain(
-        self, func: Callable, args, kwargs, /, user_identifier: str | int, operation_name: str, timeout: int, limit: int
+        self,
+        func: Callable,
+        args,
+        kwargs,
+        /,
+        user_identifier: str | int,
+        operation_name: str,
+        timeout_sec: int,
+        limit: int,
     ) -> any:
         query = await self._generate_redis_query(
             operation_name=operation_name,
@@ -69,7 +77,7 @@ class RateLimiter:
             result = await func(*args, **kwargs)
         finally:
             await self.redis_client.incr(query)
-            await self.redis_client.expire(name=query, time=timeout)
+            await self.redis_client.expire(name=query, time=timeout_sec)
 
         return result
 
