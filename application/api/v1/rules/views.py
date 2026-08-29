@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from core.schemas.moderation_rules import ModerationRulesSchema
 from fastapi import APIRouter, Depends
 
 from api.dependencies.auth.fastapi_users_instance import fastapi_current_user
 
 from . import crud
-from .schemas import ModerationRulesSchema, TaskReadySuccessResult
+from .schemas import ReadySuccessResponseSchema
 
 if TYPE_CHECKING:
     from core.models.user import User
@@ -29,11 +30,11 @@ async def moderation_rules_set(
     return {"task_id": task_id}
 
 
-@router.post("/result")
+@router.post("/result/{task_id}")
 async def moderation_rules_result(
-    task_id_schema: str,
+    task_id: str,
     user: User = Depends(fastapi_current_user),
-) -> TaskReadySuccessResult:
-    result = await crud.get_task_result(task_id=task_id_schema.task_id)
+) -> ReadySuccessResponseSchema:
+    result = await crud.get_task_result(task_id)
 
     return result
