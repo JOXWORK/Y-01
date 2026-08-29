@@ -7,6 +7,7 @@ from .authentication.authentication import router as authentication_router
 from .authentication.reissue import router as reissue_router
 from .hello_world.views import router as hello_world_router
 from .authentication_test.views import router as authentication_test_router
+from .rules.views import router as rules_router
 
 router = APIRouter(prefix=settings.api.v1.prefix.router_v1)
 
@@ -33,4 +34,10 @@ router.include_router(
     router=authentication_test_router,
     tags=settings.api.v1.tags.auth_test,
     prefix=settings.api.v1.prefix.auth_test,
+)
+
+router.include_router(
+    router=rules_router,
+    tags=settings.api.v1.tags.rules,
+    prefix=settings.api.v1.prefix.rules,
 )
