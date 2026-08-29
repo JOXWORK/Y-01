@@ -172,6 +172,16 @@ class RateLimitSettings(BaseModel):
         timeout_sec=60,
     )
 
+    moderation_rules_set: RateLimitEndpoint = RateLimitEndpoint(
+        limit=2,
+        timeout_sec=15,
+    )
+
+    moderation_rules_result: RateLimitEndpoint = RateLimitEndpoint(
+        limit=3,
+        timeout_sec=5,
+    )
+
 
 class Settings(BaseSettings):
     ROOT_DIR: Path = ROOT_DIR
