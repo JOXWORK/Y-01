@@ -10,7 +10,8 @@ class ModerationRule(Base, BaseIntIdPkMixin):
         ForeignKey(
             column="users.id",
             ondelete="cascade",
-        )
+        ),
+        unique=True,
     )
 
     rules: Mapped[dict[str, str]] = mapped_column(JSON)
