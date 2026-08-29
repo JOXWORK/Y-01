@@ -3,13 +3,11 @@ from core.models.moderation_rule import ModerationRule
 from core.taskiq.broker import broker
 from sqlalchemy import select
 
-from .schemas import TaskModerationRulesReturnSchema, TaskModerationRulesSchema
+from .schemas import TaskModerationRulesSchema
 
 
 @broker.task
-async def write_moderation_rules_db_task(
-    user_id: int, rules_schema: TaskModerationRulesSchema
-) -> TaskModerationRulesReturnSchema:
+async def write_moderation_rules_db_task(user_id: int, rules_schema: TaskModerationRulesSchema) -> bool:
     async with db_attach.session_factory() as session:
         query = select(ModerationRule).where(ModerationRule.user_id == user_id)
         sqla_result = await session.execute(query)
@@ -29,4 +27,4 @@ async def write_moderation_rules_db_task(
 
         await session.commit()
 
-        return TaskModerationRulesReturnSchema(successful=True)
+        return True
