@@ -24,6 +24,7 @@ class ApiV1Prefix(BaseModel):
     hello_world: str = "/hello_world"
     auth: str = "/auth"
     auth_test: str = "/auth-test"
+    rules: str = "/moderation-rules"
 
     @property
     def bearer_transport(self):
@@ -43,6 +44,8 @@ class ApiV1Tags(BaseModel):
     hello_world: list[str] = ["Test routes"]
     auth: list[str] = ["Auth"]
     auth_test: list[str] = ["Auth test"]
+
+    rules: list[str] = ["Moderation rules"]
 
 
 class ApiV1Summary(BaseModel):
