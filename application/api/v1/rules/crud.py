@@ -1,15 +1,8 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
 from core.schemas.moderation_rules import ModerationRulesSchema
 from core.taskiq.result_backend import result_backend
 from core.tasks.moderation_rules.write_moderation_rules_db import write_moderation_rules_db_task
 
 from .schemas import ReadySuccessResponseSchema
-
-if TYPE_CHECKING:
-    pass
 
 
 async def kick_write_rules_task(user_id: int, rules_schema: ModerationRulesSchema) -> str:
