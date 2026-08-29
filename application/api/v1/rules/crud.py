@@ -29,8 +29,7 @@ async def get_task_result(task_id: str) -> TaskReadySuccessResult:
     successful = False
     if task_is_ready:
         task_result = await result_backend.get_result(task_id)
-        if task_result.return_value:
-            successful = True
+        successful = task_result.return_value or False
 
     return TaskReadySuccessResult(
         is_ready=task_is_ready,
