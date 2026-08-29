@@ -6,13 +6,13 @@ from core.taskiq.result_backend import result_backend
 from core.tasks.moderation_rules.schemas import TaskModerationRulesSchema
 from core.tasks.moderation_rules.write_moderation_rules_db import write_moderation_rules_db_task
 
-from .schemas import ModerationRulesSchema, TaskResult
+from .schemas import ModerationRulesSchema, TaskReadySuccessResult
 
 if TYPE_CHECKING:
-    from core.models.user import User
+    pass
 
 
-async def execute_write_moderation_rules_task(user_id: int, rules_schema: ModerationRulesSchema) -> str:
+async def kick_write_rules_task(user_id: int, rules_schema: ModerationRulesSchema) -> str:
     task_rules_schema = TaskModerationRulesSchema(rules=rules_schema.rules)
 
     task = await write_moderation_rules_db_task.kiq(
@@ -23,7 +23,7 @@ async def execute_write_moderation_rules_task(user_id: int, rules_schema: Modera
     return task.task_id
 
 
-async def get_result_moderation_rules_task(task_id: str) -> TaskResult:
+async def get_task_result(task_id: str) -> TaskReadySuccessResult:
     task_is_ready = await result_backend.is_result_ready(task_id)
 
     successful = False
@@ -32,7 +32,7 @@ async def get_result_moderation_rules_task(task_id: str) -> TaskResult:
         if task_result.return_value:
             successful = True
 
-    return {
-        "is_ready": task_is_ready,
-        "successful": successful,
-    }
+    return TaskReadySuccessResult(
+        is_ready=task_is_ready,
+        successful=successful,
+    )

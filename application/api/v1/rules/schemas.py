@@ -9,6 +9,6 @@ class TaskIDSchema(BaseModel):
     task_id: str
 
 
-class TaskResult(BaseModel):
+class TaskReadySuccessResult(BaseModel):
     is_ready: bool
     successful: bool
