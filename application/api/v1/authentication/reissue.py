@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from core.http.error_details import ReissueErrorDetails
+from core.http.error_details._reissue import ReissueErrorDetails
 from core.schemas.authentication import TokenRefreshSchema
 from fastapi import APIRouter, Depends, HTTPException, status
 
@@ -26,7 +26,7 @@ async def reissue(
 
     if response is None:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=ReissueErrorDetails.BAD_REFRESH_TOKEN,
         )
 
