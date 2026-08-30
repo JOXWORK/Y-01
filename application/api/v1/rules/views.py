@@ -20,7 +20,7 @@ router = APIRouter()
 @router.post("/set-request")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
-    endpoint_cfg=rate_limiter.config.moderation_rules_set,
+    endpoint_cfg=rate_limiter.config.common_moderation_rules_request,
 )
 async def moderation_rules_set_request(
     rules_schema: ModerationRulesSchema,
@@ -37,7 +37,7 @@ async def moderation_rules_set_request(
 @router.get("/set-response/{task_id}")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
-    endpoint_cfg=rate_limiter.config.moderation_rules_result,
+    endpoint_cfg=rate_limiter.config.common_moderation_rules_response,
 )
 async def moderation_rules_set_response(
     task_id: str,
@@ -52,6 +52,10 @@ async def moderation_rules_set_response(
 
 
 @router.post("/get-request")
+@rate_limiter.restrain(
+    kwarg_schema="user.id",
+    endpoint_cfg=rate_limiter.config.common_moderation_rules_request,
+)
 async def moderation_rules_get_request(user: User = Depends(fastapi_current_user)) -> TaskIDSchema:
     task_id = await crud.get_request(user.id)
 
@@ -59,6 +63,10 @@ async def moderation_rules_get_request(user: User = Depends(fastapi_current_user
 
 
 @router.get("/get-response/{task_id}")
+@rate_limiter.restrain(
+    kwarg_schema="user.id",
+    endpoint_cfg=rate_limiter.config.common_moderation_rules_response,
+)
 async def moderation_rules_get_response(
     task_id: str,
     user: User = Depends(fastapi_current_user),
