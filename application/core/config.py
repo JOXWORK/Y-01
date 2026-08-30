@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import BaseModel, PostgresDsn
+from pydantic import BaseModel, PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT_DIR = Path(__file__).parent.parent
@@ -183,6 +183,12 @@ class RateLimitSettings(BaseModel):
     )
 
 
+class CloudRuAPISettings(BaseModel):
+    model: str = "Qwen/Qwen3.6-35B-A3B"
+    url: str
+    key: SecretStr
+
+
 class Settings(BaseSettings):
     ROOT_DIR: Path = ROOT_DIR
 
@@ -210,6 +216,8 @@ class Settings(BaseSettings):
     auth: AuthSettings
 
     rate_limit: RateLimitSettings
+
+    cloud_ru_api: CloudRuAPISettings
 
 
 ## Допустимо передовать в env_file кортеж из нескольких .env файлов, перегружающих друг друга и значения конфига.
