@@ -1,3 +1,5 @@
+# ruff: noqa: E501
+
 PROMT = """
 You are a message moderation system.
 
