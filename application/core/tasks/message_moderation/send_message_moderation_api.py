@@ -39,6 +39,7 @@ async def get_moderation_rules(user_id: int):
 @broker.task
 async def send_message_moderation_api_task(message: str, user_id: int) -> ModerationResponseSchema | None:
     moderation_result = None
+    content = None
 
     try:
         rules = await get_moderation_rules(user_id)
@@ -64,10 +65,19 @@ async def send_message_moderation_api_task(message: str, user_id: int) -> Modera
         content = response.choices[0].message.content
         moderation_result = ModerationResponseSchema.model_validate_json(content)
     except OpenAIError:
-        task_runtime_logger.logger.error("Openai module exception", exc_info=True)
+        task_runtime_logger.logger.error(
+            f"Openai module exception, LLM response: {content}",
+            exc_info=True,
+        )
     except ValidationError:
-        task_runtime_logger.logger.error("LLM response validation exception", exc_info=True)
+        task_runtime_logger.logger.error(
+            f"LLM response validation exception, LLM response: {content}",
+            exc_info=True,
+        )
     except Exception:
-        task_runtime_logger.logger.error("Unexpected exception", exc_info=True)
+        task_runtime_logger.logger.error(
+            f"Unexpected exception, LLM response: {content}",
+            exc_info=True,
+        )
 
     return moderation_result
