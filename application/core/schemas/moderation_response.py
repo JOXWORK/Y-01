@@ -2,4 +2,4 @@ from pydantic import BaseModel
 
 
 class ModerationResponseSchema(BaseModel):
-    rule: str
+    rule: str | None
