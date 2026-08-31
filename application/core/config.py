@@ -188,7 +188,7 @@ class RateLimitSettings(BaseModel):
 
 
 class CloudRuAPISettings(BaseModel):
-    model: str = "Qwen/Qwen3.6-35B-A3B"
+    model: str = "deepseek-ai/DeepSeek-V4-Pro"
     url: str
     key: SecretStr
 
