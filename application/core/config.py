@@ -186,6 +186,16 @@ class RateLimitSettings(BaseModel):
         timeout_sec=5,
     )
 
+    message_moderation_request: RateLimitEndpoint = RateLimitEndpoint(
+        limit=2,
+        timeout_sec=5,
+    )
+
+    message_moderation_response: RateLimitEndpoint = RateLimitEndpoint(
+        limit=3,
+        timeout_sec=5,
+    )
+
 
 class CloudRuAPISettings(BaseModel):
     model: str = "deepseek-ai/DeepSeek-V4-Pro"

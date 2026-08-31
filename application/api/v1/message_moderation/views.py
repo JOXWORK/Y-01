@@ -23,6 +23,10 @@ router = APIRouter()
 
 
 @router.post("/send-request")
+@rate_limiter.restrain(
+    kwarg_schema="user.id",
+    endpoint_cfg=rate_limiter.config.message_moderation_request,
+)
 async def message_moderation_send_request(
     message: str,
     user: User = Depends(fastapi_current_user),
@@ -34,6 +38,10 @@ async def message_moderation_send_request(
 
 
 @router.get("/send-response/{task_id}")
+@rate_limiter.restrain(
+    kwarg_schema="user.id",
+    endpoint_cfg=rate_limiter.config.message_moderation_response,
+)
 async def message_moderation_send_response(
     task_id: str,
     user: User = Depends(fastapi_current_user),
