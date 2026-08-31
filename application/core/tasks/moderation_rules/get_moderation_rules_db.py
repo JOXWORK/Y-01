@@ -13,6 +13,6 @@ async def get_moderation_rules_db_task(user_id: int) -> dict[str, str]:
         moderation_rule = sqla_result.scalar_one_or_none()
 
         if moderation_rule is None:
-            return
+            return None
 
         return moderation_rule.rules
