@@ -1,6 +1,6 @@
 from core.models import db_attach
 from core.models.moderation_rule import ModerationRule
-from core.schemas.moderation_rules import ModerationRulesSchema
+from core.schemas.moderation_rules import ModerationRulesSchema, SetTaskResponseSchema
 from core.taskiq.broker import broker
 from sqlalchemy import select
 
@@ -20,7 +20,7 @@ async def add_id_to_rule(rules_dict: dict[str : dict[str, str]]) -> dict[str : d
 
 
 @broker.task
-async def set_moderation_rules_db_task(user_id: int, rules_schema: ModerationRulesSchema) -> bool:
+async def set_moderation_rules_db_task(user_id: int, rules_schema: ModerationRulesSchema) -> SetTaskResponseSchema:
     async with db_attach.session_factory() as session:
         query = select(ModerationRule).where(ModerationRule.user_id == user_id)
         sqla_result = await session.execute(query)
@@ -41,4 +41,4 @@ async def set_moderation_rules_db_task(user_id: int, rules_schema: ModerationRul
 
         await session.commit()
 
-        return True
+        return SetTaskResponseSchema(successful=True)
