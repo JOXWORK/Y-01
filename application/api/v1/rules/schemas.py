@@ -3,7 +3,7 @@ from pydantic import BaseModel, ConfigDict
 
 class SetResponseSchema(BaseModel):
     is_ready: bool
-    successful: bool
+    successful: bool | None
 
 
 class TaskIDSchema(BaseModel):

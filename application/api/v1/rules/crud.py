@@ -21,18 +21,20 @@ async def set_request(user_id: int, rules_schema: ModerationRulesSchema) -> str:
 async def set_response(task_id: str) -> SetResponseSchema:
     task_is_ready = await result_backend.is_result_ready(task_id)
 
-    successful = False
+    response_schema = SetResponseSchema(is_ready=task_is_ready, successful=None)
     if task_is_ready:
         task_result = await result_backend.get_result(task_id)
-        successful = task_result.return_value or False
+        return_value: dict = task_result.return_value
 
-    if type(successful) is not bool:
-        return None
+        if type(return_value) is not dict:
+            return None
 
-    return SetResponseSchema(
-        is_ready=task_is_ready,
-        successful=successful,
-    )
+        try:
+            response_schema = SetResponseSchema(is_ready=True, **return_value)
+        except ValidationError:
+            return None
+
+    return response_schema
 
 
 async def get_request(user_id: int) -> str:
@@ -50,10 +52,10 @@ async def get_response(task_id: int) -> GetResponseSchema:
         task_result = await result_backend.get_result(task_id)
         return_value: dict = task_result.return_value
 
-        try:
-            if type(return_value) is not dict:
-                return None
+        if type(return_value) is not dict:
+            return None
 
+        try:
             response_schema.rules = return_value.get("rules", {})
         except ValidationError:
             return None
