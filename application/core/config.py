@@ -26,6 +26,7 @@ class ApiV1Prefix(BaseModel):
     auth_test: str = "/auth-test"
     rules: str = "/moderation-rules"
     message_moderation: str = "/message-moderation"
+    task_response: str = "/task-response"
 
     @property
     def bearer_transport(self):
@@ -50,6 +51,8 @@ class ApiV1Tags(BaseModel):
     rules: list[str] = ["Moderation rules"]
 
     message_moderation: list[str] = ["Message moderation"]
+
+    task_response: list[str] = ["Task response"]
 
 
 class ApiV1Summary(BaseModel):
