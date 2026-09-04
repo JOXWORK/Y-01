@@ -3,7 +3,8 @@ from core.models.db_attach import db_attach
 from core.models.moderation_rule import ModerationRule
 from core.openai_client.client import openai_client
 from core.promts.message_moderation import system_promt
-from core.schemas.moderation_response import ModerationResponseSchema
+from core.schemas.moderation_response import ModerationLLMResponseSchema
+from core.schemas.task_response import TaskResponseSchema
 from core.taskiq.broker import broker
 from core.taskiq.task_runtime_logger import task_runtime_logger
 from openai import OpenAIError
@@ -37,9 +38,8 @@ async def get_moderation_rules(user_id: int):
 
 
 @broker.task
-async def send_message_moderation_api_task(message: str, user_id: int) -> ModerationResponseSchema | None:
-    moderation_result = None
-    content = None
+async def send_message_moderation_api_task(message: str, user_id: int) -> TaskResponseSchema:
+    response = TaskResponseSchema(successful=False, content=None)
 
     try:
         rules = await get_moderation_rules(user_id)
@@ -48,7 +48,7 @@ async def send_message_moderation_api_task(message: str, user_id: int) -> Modera
             rules=rules,
         )
 
-        response = await openai_client.chat.completions.create(
+        llm_response = await openai_client.chat.completions.create(
             model=settings.cloud_ru_api.model,
             messages=[
                 {
@@ -62,22 +62,23 @@ async def send_message_moderation_api_task(message: str, user_id: int) -> Modera
             ],
         )
 
-        content = response.choices[0].message.content
-        moderation_result = ModerationResponseSchema.model_validate_json(content)
+        llm_content = llm_response.choices[0].message.content.strip()
+        response.content = ModerationLLMResponseSchema.model_validate_json(llm_content).model_dump()
+        response.successful = True
     except OpenAIError:
         task_runtime_logger.logger.error(
-            f"Openai module exception, LLM response: {content}",
+            "Openai module exception",
             exc_info=True,
         )
     except ValidationError:
         task_runtime_logger.logger.error(
-            f"LLM response validation exception, LLM response: {content}",
+            "LLM response validation exception",
             exc_info=True,
         )
     except Exception:
         task_runtime_logger.logger.error(
-            f"Unexpected exception, LLM response: {content}",
+            "Unexpected exception",
             exc_info=True,
         )
 
-    return moderation_result
+    return response

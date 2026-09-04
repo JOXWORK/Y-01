@@ -1,8 +1,12 @@
 from core.models import db_attach
 from core.models.moderation_rule import ModerationRule
-from core.schemas.moderation_rules import ModerationRulesSchema, SetTaskResponseSchema
+from core.schemas.moderation_rules import ModerationRulesSchema
+from core.schemas.task_response import TaskResponseSchema
 from core.taskiq.broker import broker
+from core.taskiq.task_runtime_logger import task_runtime_logger
+from pydantic import ValidationError
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 
 
 async def add_id_to_rule(rules_dict: dict[str : dict[str, str]]) -> dict[str : dict[str, str]]:
@@ -20,25 +24,36 @@ async def add_id_to_rule(rules_dict: dict[str : dict[str, str]]) -> dict[str : d
 
 
 @broker.task
-async def set_moderation_rules_db_task(user_id: int, rules_schema: ModerationRulesSchema) -> SetTaskResponseSchema:
-    async with db_attach.session_factory() as session:
-        query = select(ModerationRule).where(ModerationRule.user_id == user_id)
-        sqla_result = await session.execute(query)
-        moderation_rule = sqla_result.scalar_one_or_none()
+async def set_moderation_rules_db_task(user_id: int, rules_schema: ModerationRulesSchema) -> TaskResponseSchema:
+    response = TaskResponseSchema(successful=False, content=None)
 
-        rules_dict = rules_schema.model_dump()
-        id_rules_dict = await add_id_to_rule(rules_dict)
+    try:
+        async with db_attach.session_factory() as session:
+            query = select(ModerationRule).where(ModerationRule.user_id == user_id)
+            sqla_result = await session.execute(query)
+            moderation_rule = sqla_result.scalar_one_or_none()
 
-        if moderation_rule:
-            moderation_rule.rules = id_rules_dict
-        else:
-            moderation_rule = ModerationRule(
-                user_id=user_id,
-                rules=id_rules_dict,
-            )
+            rules_dict = rules_schema.model_dump()
+            id_rules_dict = await add_id_to_rule(rules_dict)
 
-            session.add(moderation_rule)
+            if moderation_rule:
+                moderation_rule.rules = id_rules_dict
+            else:
+                moderation_rule = ModerationRule(
+                    user_id=user_id,
+                    rules=id_rules_dict,
+                )
 
-        await session.commit()
+                session.add(moderation_rule)
 
-        return SetTaskResponseSchema(successful=True)
+            await session.commit()
+
+            response.successful = True
+    except SQLAlchemyError:
+        task_runtime_logger.logger.error("SQLAlchemy exception", exc_info=True)
+    except ValidationError:
+        task_runtime_logger.logger.error("Rules dict dump error", exc_info=True)
+    except Exception:
+        task_runtime_logger.logger.error("Unexpected exception", exc_info=True)
+
+    return response
