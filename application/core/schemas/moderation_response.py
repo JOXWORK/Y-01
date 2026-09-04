@@ -1,5 +1,9 @@
 from pydantic import BaseModel
 
 
+class ModerationLLMResponseSchema(BaseModel):
+    rule: str | None
+
+
 class ModerationResponseSchema(BaseModel):
     rule: str | None
