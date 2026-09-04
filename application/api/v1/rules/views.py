@@ -17,22 +17,22 @@ if TYPE_CHECKING:
 router = APIRouter()
 
 
-@router.post("/set-request")
+@router.post("/create-task-request")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
     endpoint_cfg=rate_limiter.config.common_moderation_rules_request,
 )
-async def moderation_rules_set_request(
+async def moderation_rules_create_request(
     rules_schema: ModerationRulesSchema,
     user: User = Depends(fastapi_current_user),
 ) -> TaskIDSchema:
-    return await crud.set_request(
+    return await crud.create_request(
         user_id=user.id,
         rules_schema=rules_schema,
     )
 
 
-@router.post("/get-request")
+@router.post("/get-task-request")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
     endpoint_cfg=rate_limiter.config.common_moderation_rules_request,
