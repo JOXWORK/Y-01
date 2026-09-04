@@ -18,16 +18,16 @@ if TYPE_CHECKING:
 router = APIRouter()
 
 
-@router.post("/send-request")
+@router.post("/send-message-request")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
     endpoint_cfg=rate_limiter.config.message_moderation_request,
 )
-async def message_moderation_send_request(
+async def message_moderation_send_message_request(
     message: str,
     user: User = Depends(fastapi_current_user),
 ) -> TaskIDSchema:
-    return await crud.send_request(
+    return await crud.send_message_request(
         message=message,
         user_id=user.id,
     )
