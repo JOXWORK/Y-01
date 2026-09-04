@@ -199,6 +199,11 @@ class RateLimitSettings(BaseModel):
         timeout_sec=5,
     )
 
+    task_response: RateLimitEndpoint = RateLimitEndpoint(
+        limit=5,
+        timeout_sec=5,
+    )
+
 
 class CloudRuAPISettings(BaseModel):
     model: str = "deepseek-ai/DeepSeek-V4-Pro"
