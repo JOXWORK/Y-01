@@ -90,9 +90,10 @@ class RedisConfig(BaseModel):
     ttl: int
 
 
-class RedisDB(BaseModel):
+class RedisDBSettings(BaseModel):
     rate_limit: RedisConfig
     taskiq: RedisConfig
+    llm_response_journal: RedisConfig
 
 
 class TaskiqBroker(BaseModel):
@@ -104,7 +105,7 @@ class TaskiqResultBackend(BaseModel):
     result_ex_time: int = 3600  # sec
 
 
-class TaskiqConfig(BaseModel):
+class TaskiqSettings(BaseModel):
     broker: TaskiqBroker = TaskiqBroker()
     result_backend: TaskiqResultBackend = TaskiqResultBackend()
 
@@ -179,23 +180,18 @@ class RateLimitSettings(BaseModel):
         timeout_sec=60,
     )
 
-    common_moderation_rules_request: RateLimitEndpoint = RateLimitEndpoint(
+    moderation_rules_create: RateLimitEndpoint = RateLimitEndpoint(
         limit=2,
         timeout_sec=15,
     )
 
-    common_moderation_rules_response: RateLimitEndpoint = RateLimitEndpoint(
+    moderation_rules_get: RateLimitEndpoint = RateLimitEndpoint(
         limit=3,
-        timeout_sec=5,
+        timeout_sec=20,
     )
 
-    message_moderation_request: RateLimitEndpoint = RateLimitEndpoint(
+    message_moderation_send_message: RateLimitEndpoint = RateLimitEndpoint(
         limit=2,
-        timeout_sec=5,
-    )
-
-    message_moderation_response: RateLimitEndpoint = RateLimitEndpoint(
-        limit=3,
         timeout_sec=5,
     )
 
@@ -209,6 +205,11 @@ class CloudRuAPISettings(BaseModel):
     model: str = "deepseek-ai/DeepSeek-V4-Pro"
     url: str
     key: SecretStr
+
+
+class LLMResponseJournalSettings(BaseModel):
+    lifetime_days: int = 3
+    lifetime_hours: int = 0
 
 
 class Settings(BaseSettings):
@@ -231,15 +232,17 @@ class Settings(BaseSettings):
 
     db: DBSettings
 
-    redis: RedisDB
+    redis: RedisDBSettings
 
-    taskiq: TaskiqConfig = TaskiqConfig()
+    taskiq: TaskiqSettings = TaskiqSettings()
 
     auth: AuthSettings
 
     rate_limit: RateLimitSettings
 
     cloud_ru_api: CloudRuAPISettings
+
+    llm_response_journal: LLMResponseJournalSettings = LLMResponseJournalSettings()
 
 
 ## Допустимо передовать в env_file кортеж из нескольких .env файлов, перегружающих друг друга и значения конфига.
