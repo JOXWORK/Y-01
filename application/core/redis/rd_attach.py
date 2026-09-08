@@ -22,4 +22,5 @@ class RDAttach:
 
 rd_attach = RDAttach(
     rate_limit=redis.from_url(settings.redis.rate_limit.url),
+    llm_response_journal=redis.from_url(settings.redis.llm_response_journal.url),
 )

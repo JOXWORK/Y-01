@@ -1,4 +1,5 @@
 from core.config import settings
+from core.llm_response_journal.journal import LLMResponseJournalWriteError, llm_response_journal
 from core.models.db_attach import db_attach
 from core.models.moderation_rule import ModerationRule
 from core.openai_client.client import openai_client
@@ -10,6 +11,7 @@ from core.taskiq.task_runtime_logger import task_runtime_logger
 from openai import OpenAIError
 from pydantic import ValidationError
 from sqlalchemy import select
+from taskiq import Context, TaskiqDepends
 
 
 async def generate_user_promt(message: str, rules: dict):
@@ -38,7 +40,11 @@ async def get_moderation_rules(user_id: int):
 
 
 @broker.task
-async def send_message_moderation_api_task(message: str, user_id: int) -> TaskResponseSchema:
+async def send_message_moderation_api_task(
+    message: str,
+    user_id: int,
+    context: Context = TaskiqDepends(),
+) -> TaskResponseSchema:
     response = TaskResponseSchema(successful=False, content=None)
 
     try:
@@ -63,7 +69,14 @@ async def send_message_moderation_api_task(message: str, user_id: int) -> TaskRe
         )
 
         llm_content = llm_response.choices[0].message.content.strip()
-        response.content = ModerationLLMResponseSchema.model_validate_json(llm_content).model_dump()
+        await llm_response_journal.write(
+            key_name=context.message.task_id,
+            content=llm_content,
+        )
+
+        response.content = ModerationLLMResponseSchema.model_validate_json(
+            llm_content,
+        ).model_dump()
         response.successful = True
     except OpenAIError:
         task_runtime_logger.logger.error(
@@ -73,6 +86,11 @@ async def send_message_moderation_api_task(message: str, user_id: int) -> TaskRe
     except ValidationError:
         task_runtime_logger.logger.error(
             "LLM response validation exception",
+            exc_info=True,
+        )
+    except LLMResponseJournalWriteError:
+        task_runtime_logger.logger.error(
+            "LLM response journal write error",
             exc_info=True,
         )
     except Exception:
