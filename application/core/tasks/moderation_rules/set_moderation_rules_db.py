@@ -17,8 +17,7 @@ async def add_id_to_rule(rules_dict: dict[str : dict[str, str]]) -> dict[str : d
         rule = items[0]
         action = items[1]
 
-        id_rule = f"{index}: {rule}"
-        id_rule_dict[id_rule] = action
+        id_rule_dict.update({index: {rule: action}})
 
     return {"rules": id_rule_dict}
 
