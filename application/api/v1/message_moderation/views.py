@@ -21,7 +21,7 @@ router = APIRouter()
 @router.post("/send-message-request")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
-    endpoint_cfg=rate_limiter.config.message_moderation_request,
+    endpoint_cfg=rate_limiter.config.message_moderation_send_message,
 )
 async def message_moderation_send_message_request(
     message: str,

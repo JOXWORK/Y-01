@@ -20,7 +20,7 @@ router = APIRouter()
 @router.post("/create-task-request")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
-    endpoint_cfg=rate_limiter.config.common_moderation_rules_request,
+    endpoint_cfg=rate_limiter.config.moderation_rules_create,
 )
 async def moderation_rules_create_request(
     rules_schema: ModerationRulesSchema,
@@ -35,7 +35,7 @@ async def moderation_rules_create_request(
 @router.post("/get-task-request")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
-    endpoint_cfg=rate_limiter.config.common_moderation_rules_request,
+    endpoint_cfg=rate_limiter.config.moderation_rules_get,
 )
 async def moderation_rules_get_request(
     user: User = Depends(fastapi_current_user),
