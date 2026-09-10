@@ -108,6 +108,7 @@ class TaskiqResultBackend(BaseModel):
 class TaskiqSettings(BaseModel):
     broker: TaskiqBroker = TaskiqBroker()
     result_backend: TaskiqResultBackend = TaskiqResultBackend()
+    result_timeout: int = 20
 
 
 class AccessToken(BaseModel):

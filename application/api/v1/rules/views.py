@@ -41,3 +41,10 @@ async def moderation_rules_get_request(
     user: User = Depends(fastapi_current_user),
 ) -> TaskIDSchema:
     return await crud.get_request(user.id)
+
+
+@router.post("/get-human-readable-task-request")
+async def moderation_rules_get_human_readable_request(
+    user: User = Depends(fastapi_current_user),
+):
+    return await crud.get_human_readable_request(user.id)
