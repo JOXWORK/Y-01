@@ -9,17 +9,17 @@ from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
 
-async def add_id_to_rule(rules_dict: dict[str : dict[str, str]]) -> dict[str : dict[str, str]]:
+async def turn_to_numbered(rules_dict: dict[str : dict[str, str]]) -> dict[str : dict[str, str]]:
     rule_dict = rules_dict["rules"]
-    id_rule_dict = {}
+    numbered_rule_dict = {}
 
     for index, items in enumerate(rule_dict.items()):
         rule = items[0]
         action = items[1]
 
-        id_rule_dict.update({index: {rule: action}})
+        numbered_rule_dict.update({index: {rule: action}})
 
-    return {"rules": id_rule_dict}
+    return {"rules_numbered": numbered_rule_dict}
 
 
 @broker.task
@@ -32,15 +32,17 @@ async def set_moderation_rules_db_task(user_id: int, rules_schema: ModerationRul
             sqla_result = await session.execute(query)
             moderation_rule = sqla_result.scalar_one_or_none()
 
-            rules_dict = rules_schema.model_dump()
-            id_rules_dict = await add_id_to_rule(rules_dict)
+            rule_dict = rules_schema.model_dump()
+            numbered_rule_dict = await turn_to_numbered(rule_dict)
 
             if moderation_rule:
-                moderation_rule.rules = id_rules_dict
+                moderation_rule.rules = rule_dict
+                moderation_rule.rules_numbered = numbered_rule_dict
             else:
                 moderation_rule = ModerationRule(
                     user_id=user_id,
-                    rules=id_rules_dict,
+                    rules=rule_dict,
+                    rules_numbered=numbered_rule_dict,
                 )
 
                 session.add(moderation_rule)
