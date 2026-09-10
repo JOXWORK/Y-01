@@ -7,10 +7,6 @@ from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
 
-class DBResponseRulesIsNoneError(Exception):
-    pass
-
-
 @broker.task
 async def get_moderation_rules_db_task(user_id: int) -> TaskResponseSchema:
     response = TaskResponseSchema(successful=False, content=None)
@@ -21,15 +17,17 @@ async def get_moderation_rules_db_task(user_id: int) -> TaskResponseSchema:
 
             moderation_rule = sqla_result.scalar_one_or_none()
 
-            if moderation_rule is None:
-                raise DBResponseRulesIsNoneError()
+            content = {"message": "Rules not found"}
+            if moderation_rule:
+                content.clear()
 
-            response.content = moderation_rule.rules
+                content.update(moderation_rule.rules)
+                content.update(moderation_rule.rules_numbered)
+
+            response.content = content
             response.successful = True
     except SQLAlchemyError:
         task_runtime_logger.logger.error("SQLAlchemy exception", exc_info=True)
-    except DBResponseRulesIsNoneError:
-        task_runtime_logger.logger.error("SQLAlchemy response got none", exc_info=True)
     except Exception:
         task_runtime_logger.logger.error("Unexpected exception", exc_info=True)
 
