@@ -34,5 +34,4 @@ def func_main():
 
 
 if __name__ == "__main__":
-    func_main()  # minor
-    # minor 2
+    func_main()
