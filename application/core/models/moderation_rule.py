@@ -14,4 +14,6 @@ class ModerationRule(Base, BaseIntIdPkMixin):
         unique=True,
     )
 
-    rules: Mapped[dict[str, str]] = mapped_column(JSON)
+    rules: Mapped[dict] = mapped_column(JSON)
+
+    rules_numbered: Mapped[dict] = mapped_column(JSON)
