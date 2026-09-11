@@ -17,7 +17,7 @@ async def get_moderation_rules_db_task(user_id: int) -> TaskResponseSchema:
 
             moderation_rule = sqla_result.scalar_one_or_none()
 
-            content = {"message": "Rules not found"}
+            content = {"message": "Rules not found"}  # replace by messages
             if moderation_rule:
                 content.clear()
 
