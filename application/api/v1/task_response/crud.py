@@ -17,12 +17,13 @@ async def get_result(task_id: str) -> APITaskResponseSchema:
         task_response = TaskResponseSchema(**task_result.return_value)
 
         task_successful = task_response.successful
+        task_content = task_response.content
 
         api_response.ready = True
         api_response.successful = task_successful
-        api_response.content = task_response.content
+        api_response.content = task_content
 
-        if not task_successful:
+        if not task_successful and task_content is None:
             api_response.content = {"message": "Internal task error"}
 
     return api_response
