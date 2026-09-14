@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 router = APIRouter()
 
 
-@router.post("/send-message-request")
+@router.post("/send-message-task-request")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
     endpoint_cfg=rate_limiter.config.message_moderation_send_message,
