@@ -14,6 +14,3 @@ class APITaskResponseSchema(BaseModel):
     ready: bool
     successful: bool | None
     content: dict | None
-
-
-# ABBAB
