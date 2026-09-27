@@ -1,3 +1,7 @@
+x-redis-password-env: &redis-password-env
+  REDIS_PASSWORD: password
+
+
 services:
   app:
     restart: always
@@ -10,6 +14,8 @@ services:
     depends_on:
       pg:
         condition: service_healthy
+    environment:
+      <<: *redis-password-env
     ports:
       - "8000:8000"
     develop:
@@ -22,6 +28,7 @@ services:
           path: ./poetry.lock
         - action: rebuild
           path: ./pyproject.toml
+    
 
 
   worker:
@@ -84,6 +91,8 @@ services:
     depends_on:
       pg:
         condition: service_healthy
+    environment:
+      <<: *redis-password-env
     command:
       - redis-server
       - --appendonly
@@ -96,6 +105,16 @@ services:
       - 128mb
       - --no-appendfsync-on-rewrite
       - "yes"
+      - --user
+      - default
+      - "off"
+      - --user
+      - user
+      - "on"
+      - ">$$REDIS_PASSWORD"
+      - "~*"
+      - "&*"
+      - "+@all"
 
     ports:
       - "6379:6379"
