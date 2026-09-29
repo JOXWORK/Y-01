@@ -1,6 +1,7 @@
-x-redis-password-env: &redis-password-env
-  REDIS_PASSWORD: password
-
+x-application-env: &application-env
+  env_file: 
+    - application/.env.template
+    - application/.env
 
 services:
   app:
@@ -14,8 +15,6 @@ services:
     depends_on:
       pg:
         condition: service_healthy
-    environment:
-      <<: *redis-password-env
     ports:
       - "8000:8000"
     develop:
@@ -89,8 +88,7 @@ services:
     depends_on:
       pg:
         condition: service_healthy
-    environment:
-      <<: *redis-password-env
+    <<: *application-env
     command:
       - sh
       - "-c"
@@ -102,7 +100,7 @@ services:
           --auto-aof-rewrite-min-size 128mb \
           --no-appendfsync-on-rewrite "yes" \
           --user default "off" \
-          --user user "on" ">$$REDIS_PASSWORD" "~*" "&*" "+@all" \
+          --user user "on" ">$$APPLICATION__REDIS__PASSWORD" "~*" "&*" "+@all" \
     ports:
       - "6379:6379"
     volumes:
