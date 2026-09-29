@@ -91,6 +91,7 @@ class RedisConfig(BaseModel):
 
 
 class RedisDBSettings(BaseModel):
+    password: str
     rate_limit: RedisConfig
     taskiq: RedisConfig
     llm_response_journal: RedisConfig
