@@ -1,7 +1,7 @@
-x-application-env: &application-env
+x-application-redis-env: &application-redis-env
   env_file: 
-    - application/.env.template
-    - application/.env
+    - application/environment/.env.redis.template
+    - application/environment/.env.redis
 
 services:
   app:
@@ -88,7 +88,7 @@ services:
     depends_on:
       pg:
         condition: service_healthy
-    <<: *application-env
+    <<: *application-redis-env
     command:
       - sh
       - "-c"
@@ -100,7 +100,7 @@ services:
           --auto-aof-rewrite-min-size 128mb \
           --no-appendfsync-on-rewrite "yes" \
           --user default "off" \
-          --user user "on" ">$$APPLICATION__REDIS__PASSWORD" "~*" "&*" "+@all" \
+          --user user "on" ">$$REDIS_PASSWORD" "~*" "&*" "+@all" \
     ports:
       - "6379:6379"
     volumes:

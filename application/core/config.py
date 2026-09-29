@@ -218,8 +218,8 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
         env_file=(
-            ".env.template",
-            ".env",
+            "environment/.env.template",
+            "environment/.env",
         ),
         env_file_encoding="UTF-8",
         case_sensitive=False,
