@@ -224,12 +224,7 @@ class Settings(BaseSettings):
     ROOT_DIR: Path = ROOT_DIR
 
     model_config = SettingsConfigDict(
-        env_file=(
-            "environment/.env.redis.template",
-            "environment/.env.template",
-            "environment/.env.redis",
-            "environment/.env",
-        ),
+        env_file=None,
         env_file_encoding="UTF-8",
         case_sensitive=False,
         env_nested_delimiter="__",
