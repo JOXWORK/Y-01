@@ -100,7 +100,7 @@ services:
           --auto-aof-rewrite-min-size 128mb \
           --no-appendfsync-on-rewrite "yes" \
           --user default "off" \
-          --user user "on" ">$$REDIS_PASSWORD" "~*" "&*" "+@all" \
+          --user "$$APPLICATION__REDIS__USERNAME" "on" ">$$APPLICATION__REDIS__PASSWORD" "~*" "&*" "+@all" \
     ports:
       - "6379:6379"
     volumes:
