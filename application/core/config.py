@@ -91,10 +91,17 @@ class RedisConfig(BaseModel):
 
 
 class RedisDBSettings(BaseModel):
+    username: str
     password: str
     rate_limit: RedisConfig
     taskiq: RedisConfig
     llm_response_journal: RedisConfig
+
+    def get_auth_credentials(self) -> dict:
+        return {
+            "username": self.username,
+            "password": self.password,
+        }
 
 
 class TaskiqBroker(BaseModel):
@@ -218,7 +225,9 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
         env_file=(
+            "environment/.env.redis.template",
             "environment/.env.template",
+            "environment/.env.redis",
             "environment/.env",
         ),
         env_file_encoding="UTF-8",

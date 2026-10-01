@@ -5,6 +5,7 @@ from core.config import settings
 from .result_backend import result_backend
 
 broker = RedisStreamBroker(
+    **settings.redis.get_auth_credentials(),
     url=settings.redis.taskiq.url,
     maxlen=settings.taskiq.broker.maxlen,
     approximate=settings.taskiq.broker.approximate,

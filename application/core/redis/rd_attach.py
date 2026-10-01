@@ -2,6 +2,8 @@ import redis.asyncio as redis
 
 from core.config import settings
 
+redis.Redis
+
 
 class RDAttach:
     def __init__(self, **kwargs):
@@ -20,7 +22,15 @@ class RDAttach:
             await client.aclose()
 
 
+redis_auth_credentials = settings.redis.get_auth_credentials()
+
 rd_attach = RDAttach(
-    rate_limit=redis.from_url(settings.redis.rate_limit.url),
-    llm_response_journal=redis.from_url(settings.redis.llm_response_journal.url),
+    rate_limit=redis.from_url(
+        settings.redis.rate_limit.url,
+        **redis_auth_credentials,
+    ),
+    llm_response_journal=redis.from_url(
+        settings.redis.llm_response_journal.url,
+        **redis_auth_credentials,
+    ),
 )
