@@ -1,5 +1,7 @@
 x-application-env-files:
+  env-grafana-template: &env-grafana-template application/environment/native/.env.grafana.template
   env-redis-template: &env-redis-template application/environment/.env.redis.template
+  env-grafana: &env-grafana application/environment/native/.env.grafana
   env-template: &env-template application/environment/.env.template
   env-redis: &env-redis application/environment/.env.redis
   dot-env: &dot-env application/environment/.env
@@ -153,9 +155,9 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=password
+    env_file:
+      - *env-grafana-template
+      - *env-grafana
     depends_on:
       - loki
     restart: always
