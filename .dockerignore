@@ -89,4 +89,7 @@ venv/
 .vscode/
 
 # Dir with test files
-stuff
+application/stuff/
+
+# Application env files
+application/environment/
