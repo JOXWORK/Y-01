@@ -87,7 +87,6 @@ class DBSettings(BaseModel):
 
 class RedisConfig(BaseModel):
     url: str
-    ttl: int
 
 
 class RedisDBSettings(BaseModel):
