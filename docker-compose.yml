@@ -125,7 +125,6 @@ services:
     volumes:
       - ./monitoring/loki/loki-config.yml:/etc/loki/loki-config.yml:ro
       - loki-data:/loki
-    # restart: unless-stopped
     restart: always
     networks:
       - monitoring
@@ -143,7 +142,6 @@ services:
       - alloy-data:/var/lib/alloy/data
     depends_on:
       - loki
-    # restart: unless-stopped
     restart: always
     networks:
       - monitoring
@@ -160,7 +158,6 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=password
     depends_on:
       - loki
-    # restart: unless-stopped
     restart: always
     networks:
       - monitoring
