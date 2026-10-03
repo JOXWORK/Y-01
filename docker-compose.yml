@@ -1,9 +1,11 @@
 x-application-env-files:
   env-postgres-template: &env-postgres-template application/environment/native/.env.postgres.template
   env-grafana-template: &env-grafana-template application/environment/native/.env.grafana.template
+  env-pgadmin-template: &env-pgadmin-template application/environment/native/.env.pgadmin.template
   env-redis-template: &env-redis-template application/environment/.env.redis.template
   
   env-postgres: &env-postgres application/environment/native/.env.postgres
+  env-pgadmin: &env-pgadmin application/environment/native/.env.pgadmin
   env-grafana: &env-grafana application/environment/native/.env.grafana
   env-template: &env-template application/environment/.env.template
   env-redis: &env-redis application/environment/.env.redis
@@ -89,12 +91,13 @@ services:
     image: elestio/pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_LISTEN_PORT: 8080
     depends_on:
       pg:
         condition: service_healthy
+    env_file:
+      - *env-pgadmin-template
+      - *env-pgadmin
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
