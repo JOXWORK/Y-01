@@ -182,7 +182,7 @@ class RateLimitSettings(BaseModel):
         timeout_sec=600,
     )
 
-    register: RateLimitEndpoint = RateLimitEndpoint(
+    fastapi_users__register: RateLimitEndpoint = RateLimitEndpoint(
         limit=2,
         timeout_sec=60,
     )

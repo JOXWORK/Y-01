@@ -45,7 +45,7 @@ def get_register_router(
     )
     @rate_limiter.restrain(
         kwarg_schema="request.client.host",
-        endpoint_cfg=rate_limiter.config.register,
+        endpoint_cfg=rate_limiter.config.fastapi_users__register,
     )
     async def register(
         request: Request,
