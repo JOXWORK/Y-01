@@ -72,10 +72,6 @@ services:
     image: postgres:17.6
     restart: always
     shm_size: 128mb
-    # environment:
-    #   POSTGRES_DB: fastapi_application
-    #   POSTGRES_USER: user
-    #   POSTGRES_PASSWORD: password
     env_file:
       - *env-postgres-template
       - *env-postgres
