@@ -22,15 +22,15 @@ class RDAttach:
             await client.aclose()
 
 
-redis_auth_credentials = settings.redis.get_auth_credentials()
+auth_credentials = settings.redis.get_auth_credentials()
 
 rd_attach = RDAttach(
     rate_limit=redis.from_url(
         settings.redis.rate_limit.url,
-        **redis_auth_credentials,
+        **auth_credentials,
     ),
     llm_response_journal=redis.from_url(
         settings.redis.llm_response_journal.url,
-        **redis_auth_credentials,
+        **auth_credentials,
     ),
 )
