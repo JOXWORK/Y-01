@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from pydantic import BaseModel, PostgresDsn, SecretStr
@@ -219,6 +220,11 @@ class LLMResponseJournalSettings(BaseModel):
     lifetime_hours: int = 0
 
 
+class TaskLoggerSettings(BaseModel):
+    name: str = "task_logger"
+    level: int = logging.INFO
+
+
 class Settings(BaseSettings):
     ROOT_DIR: Path = ROOT_DIR
 
@@ -247,6 +253,8 @@ class Settings(BaseSettings):
     cloud_ru_api: CloudRuAPISettings
 
     llm_response_journal: LLMResponseJournalSettings = LLMResponseJournalSettings()
+
+    task_logger: TaskLoggerSettings = TaskLoggerSettings()
 
 
 ## Допустимо передовать в env_file кортеж из нескольких .env файлов, перегружающих друг друга и значения конфига.

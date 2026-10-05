@@ -1,14 +1,27 @@
 import logging
+from typing import Any
+
+from core.config import settings
+from core.taskiq.except_messages import TaskExceptionMessages
 
 
-class TaskRuntimeLogger:
-    def __init__(self):
-        self.name = "task_runtime_logger"
-        self.log_level = logging.INFO
+class TaskLogger(logging.Logger):
+    def __init__(self, *args, **kwargs):
+        name = settings.task_logger.name
+        level = settings.task_logger.level
 
-        logging.basicConfig(level=self.log_level)
+        super().__init__(name, level)
 
-        self.logger = logging.getLogger(self.name)
+    def enum_error(self, msg: TaskExceptionMessages | Any, exc_info: bool = True, *args, **kwargs):
+        message = msg
+        if type(message) is TaskExceptionMessages:
+            message = message.value
+
+        self.error(msg=message, exc_info=exc_info, *args, **kwargs)
 
 
-task_runtime_logger = TaskRuntimeLogger()
+logging.setLoggerClass(TaskLogger)
+
+
+def get_task_logger(name: str = settings.task_logger.name):
+    return logging.getLogger(name)
