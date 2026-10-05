@@ -41,3 +41,8 @@ async def moderation_rules_get_request(
     user: User = Depends(fastapi_current_user),
 ) -> TaskIDSchema:
     return await crud.get_request(user.id)
+
+
+@router.delete("/delete-task-request")
+async def moeration_rules_delete_request(user: User = Depends(fastapi_current_user)) -> TaskIDSchema:
+    return await crud.delete_request(user.id)

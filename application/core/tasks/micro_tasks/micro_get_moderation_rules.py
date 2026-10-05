@@ -4,7 +4,9 @@ from core.models.db_attach import db_attach
 from core.models.moderation_rule import ModerationRule
 from core.schemas.task_response import TaskResponseSchema
 from core.taskiq.broker import broker
-from core.taskiq.task_runtime_logger import task_runtime_logger
+from core.taskiq.task_runtime_logger import get_task_logger
+
+logger = get_task_logger()
 
 
 @broker.task
@@ -25,6 +27,6 @@ async def get_moderation_rules_micro_task(user_id: int) -> TaskResponseSchema:
                 }
                 response.successful = True
     except Exception:
-        task_runtime_logger.logger.error("Get moderation rules micro task", exc_info=True)
+        logger.error("Get moderation rules micro task", exc_info=True)
 
     return response

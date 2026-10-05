@@ -4,9 +4,11 @@ from core.schemas.task_response import TaskResponseSchema
 from core.taskiq.broker import broker
 from core.taskiq.except_messages import TaskExceptionMessages
 from core.taskiq.task_messages import TaskResponseMessages, create_message
-from core.taskiq.task_runtime_logger import task_runtime_logger
+from core.taskiq.task_runtime_logger import get_task_logger
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
+
+logger = get_task_logger()
 
 
 @broker.task
@@ -28,15 +30,9 @@ async def delete_moderation_rules_db_task(user_id: int) -> TaskResponseSchema:
                 response.content = create_message(message=TaskResponseMessages.RULES_NOT_FOUND)
 
     except SQLAlchemyError:
-        task_runtime_logger.logger.error(
-            TaskExceptionMessages.SQLALCHEMY_EXCEPTION.value,
-            exc_info=True,
-        )
+        logger.enum_error(TaskExceptionMessages.SQLALCHEMY_EXCEPTION)
 
     except Exception:
-        task_runtime_logger.logger.error(
-            TaskExceptionMessages.UNEXPECTED_EXCEPTION.value,
-            exc_info=True,
-        )
+        logger.enum_error(TaskExceptionMessages.UNEXPECTED_EXCEPTION)
 
     return response
