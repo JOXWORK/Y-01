@@ -4,13 +4,14 @@ from core.openai_client.client import openai_client
 from core.promts.message_moderation import system_promt
 from core.schemas.moderation_response import ModerationLLMResponseSchema
 from core.schemas.task_response import TaskResponseSchema
+from core.task_depends.get_moderation_rules import getModerationRules
 from core.taskiq.broker import broker
 from core.taskiq.except_messages import TaskExceptionMessages
 from core.taskiq.task_logger import get_task_logger
 from core.taskiq.task_messages import TaskResponseMessages, create_message
-from core.tasks.micro_tasks.micro_get_moderation_rules import get_moderation_rules_micro_task
 from openai import OpenAIError
 from pydantic import ValidationError
+from sqlalchemy.exc import SQLAlchemyError
 from taskiq import Context, TaskiqDepends
 
 logger = get_task_logger()
@@ -29,7 +30,7 @@ def generate_user_promt(message: str, rules: dict):
 
 
 @broker.task
-async def send_message_moderation_api_task(
+async def SendMessageModeration(
     message: str,
     user_id: int,
     context: Context = TaskiqDepends(),
@@ -37,12 +38,10 @@ async def send_message_moderation_api_task(
     response = TaskResponseSchema(successful=False, content=None)
 
     try:
-        rules_micro_task = await get_moderation_rules_micro_task.kiq(user_id=user_id)
-        rules_micro_task_result = await rules_micro_task.wait_result()
-        rules_micro_task_response = rules_micro_task_result.return_value
+        moderation_rules = await getModerationRules(user_id)
 
-        if rules_micro_task_response.successful:
-            rules = rules_micro_task_response.content["rules_numbered"]
+        if moderation_rules:
+            rules = moderation_rules["rules_numbered"]
 
             PROMT = generate_user_promt(
                 message=message,
@@ -81,6 +80,8 @@ async def send_message_moderation_api_task(
         logger.error("LLM response validation exception", exc_info=True)
     except LLMResponseJournalWriteError:
         logger.error("LLM response journal write error", exc_info=True)
+    except SQLAlchemyError:
+        logger.enum_error(TaskExceptionMessages.SQLALCHEMY_EXCEPTION)
     except Exception:
         logger.enum_error(TaskExceptionMessages.UNEXPECTED_EXCEPTION)
 

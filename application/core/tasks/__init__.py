@@ -4,7 +4,7 @@
 from .hello_world.for_loop_task_example import for_loop_task_example_task
 from .moderation_rules.set_moderation_rules_db import set_moderation_rules_db_task
 from .moderation_rules.get_moderation_rules import GetModerationRules
-from .message_moderation.send_message_moderation_api import send_message_moderation_api_task
+from .message_moderation.send_message_moderation import SendMessageModeration
 from .moderation_rules.delete_moderation_rules_db import delete_moderation_rules_db_task
 
 # Micro tasks
@@ -17,6 +17,6 @@ __all__ = (
     "for_loop_task_example_task",
     "set_moderation_rules_db_task",
     "GetModerationRules",
-    "send_message_moderation_api_task",
+    "SendMessageModeration",
     "delete_moderation_rules_db_task",
 )
