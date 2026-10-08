@@ -25,4 +25,4 @@ async def task_response_get(
     task_id: str,
     user: User = Depends(fastapi_current_user),
 ) -> APITaskResponseSchema:
-    return await crud.get(task_id)
+    return await crud.get_response(task_id)
