@@ -12,7 +12,7 @@ logger = get_task_logger()
 
 
 @broker.task
-async def delete_moderation_rules_db_task(user_id: int) -> TaskResponseSchema:
+async def DeleteModerationRules(user_id: int) -> TaskResponseSchema:
     response = TaskResponseSchema(successful=False, content=None)
 
     try:

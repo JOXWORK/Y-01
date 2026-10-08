@@ -11,7 +11,7 @@ logger = get_task_logger()
 
 
 @broker.task
-async def set_moderation_rules_db_task(user_id: int, rules: dict, rules_numbered: dict) -> TaskResponseSchema:
+async def SetModerationRules(user_id: int, rules: dict, rules_numbered: dict) -> TaskResponseSchema:
     response = TaskResponseSchema(successful=False, content=None)
 
     try:
