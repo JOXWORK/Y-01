@@ -4,7 +4,7 @@ from core.taskiq.result_backend import result_backend
 from api.schemas.v1.api_task_response import APITaskResponseSchema
 
 
-async def get_result(task_id: str) -> APITaskResponseSchema:
+async def get(task_id: str) -> APITaskResponseSchema:
     api_response = APITaskResponseSchema(
         ready=False,
         successful=None,

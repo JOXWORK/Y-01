@@ -17,32 +17,32 @@ if TYPE_CHECKING:
 router = APIRouter()
 
 
-@router.post("/create-task-request")
+@router.post("/create")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
     endpoint_cfg=rate_limiter.config.moderation_rules_create,
 )
-async def moderation_rules_create_request(
+async def moderation_rules_create(
     rules_schema: ModerationRulesSchema,
     user: User = Depends(fastapi_current_user),
 ) -> TaskIDSchema:
-    return await crud.create_request(
+    return await crud.create_rules(
         user_id=user.id,
         rules=rules_schema.model_dump(),
     )
 
 
-@router.post("/get-task-request")
+@router.post("/get")
 @rate_limiter.restrain(
     kwarg_schema="user.id",
     endpoint_cfg=rate_limiter.config.moderation_rules_get,
 )
-async def moderation_rules_get_request(
+async def moderation_rules_get(
     user: User = Depends(fastapi_current_user),
 ) -> TaskIDSchema:
-    return await crud.get_request(user.id)
+    return await crud.get_rules(user.id)
 
 
-@router.delete("/delete-task-request")
-async def moeration_rules_delete_request(user: User = Depends(fastapi_current_user)) -> TaskIDSchema:
-    return await crud.delete_request(user.id)
+@router.delete("/delete")
+async def moderation_rules_delete(user: User = Depends(fastapi_current_user)) -> TaskIDSchema:
+    return await crud.delete_rules(user.id)
