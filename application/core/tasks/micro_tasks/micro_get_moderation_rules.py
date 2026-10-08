@@ -4,7 +4,7 @@ from core.models.db_attach import db_attach
 from core.models.moderation_rule import ModerationRule
 from core.schemas.task_response import TaskResponseSchema
 from core.taskiq.broker import broker
-from core.taskiq.task_runtime_logger import get_task_logger
+from core.taskiq.task_logger import get_task_logger
 
 logger = get_task_logger()
 

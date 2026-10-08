@@ -3,7 +3,7 @@ from core.models.moderation_rule import ModerationRule
 from core.schemas.task_response import TaskResponseSchema
 from core.taskiq.broker import broker
 from core.taskiq.except_messages import TaskExceptionMessages
-from core.taskiq.task_runtime_logger import get_task_logger
+from core.taskiq.task_logger import get_task_logger
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 
