@@ -25,8 +25,8 @@ class ApiV1Prefix(BaseModel):
     hello_world: str = "/hello_world"
     auth: str = "/auth"
     auth_test: str = "/auth-test"
-    rules: str = "/moderation-rules"
-    message_moderation: str = "/message-moderation"
+    rules: str = "/moderation-rules/task"
+    message_moderation: str = "/message-moderation/task"
     task_response: str = "/task-response"
 
     @property
