@@ -48,5 +48,22 @@ async def token_pair(client: AsyncClient):
 
 
 @pytest_asyncio.fixture
-async def first_register_login(register, token_pair):
-    pass
+async def auth_header(client: AsyncClient):
+    response = await client.post(
+        url=url_root + "/auth/register",
+        json=credentials["register"],
+    )
+
+    assert response.status_code == 201
+
+    response = await client.post(
+        url=url_root + "/auth/login",
+        data=credentials["login"],
+    )
+
+    assert response.status_code == 200
+
+    data = orjson.loads(response.text)
+    access_token = data["access_token"]
+
+    return {"Authorization": f"Bearer {access_token}"}
