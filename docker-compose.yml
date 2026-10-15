@@ -32,6 +32,11 @@ services:
         condition: service_healthy
     env_file: 
       *application-common-image-env-list
+    healthcheck:
+      test: ["CMD", "python", "utils/executable/app_healthcheck/healthcheck.py"]
+      interval: 3s
+      timeout: 5s
+      retries: 5
     ports:
       - "8000:8000"
     develop:
@@ -74,6 +79,8 @@ services:
       target: tests
     depends_on:
       pg:
+        condition: service_healthy
+      app:
         condition: service_healthy
     env_file: 
       *application-common-image-env-list
