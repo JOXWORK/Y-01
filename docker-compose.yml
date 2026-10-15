@@ -11,6 +11,14 @@ x-application-env-files:
   env-redis: &env-redis application/environment/.env.redis
   dot-env: &dot-env application/environment/.env
 
+x-application-common-image-env-list: &application-common-image-env-list
+  - *env-postgres-template
+  - *env-redis-template
+  - *env-postgres
+  - *env-template
+  - *env-redis
+  - *dot-env
+
 
 services:
   app:
@@ -23,12 +31,7 @@ services:
       pg:
         condition: service_healthy
     env_file: 
-      - *env-postgres-template
-      - *env-redis-template
-      - *env-postgres
-      - *env-template
-      - *env-redis
-      - *dot-env
+      *application-common-image-env-list
     ports:
       - "8000:8000"
     develop:
@@ -52,12 +55,7 @@ services:
       - redis
       - pg
     env_file:
-      - *env-postgres-template
-      - *env-redis-template
-      - *env-postgres
-      - *env-template
-      - *env-redis
-      - *dot-env
+      *application-common-image-env-list
     command: taskiq worker core.taskiq.broker:broker core.tasks
     scale: 1
     develop:
@@ -68,7 +66,6 @@ services:
         - action: sync+restart
           path: ./application/core/taskiq
           target: /application/core/taskiq
-
 
   pg:
     image: postgres:17.6
@@ -176,6 +173,7 @@ services:
 
 networks:
   monitoring:
+
 
 volumes:
   pgdata:
