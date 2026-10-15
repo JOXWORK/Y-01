@@ -10,6 +10,7 @@ from .authentication_test.views import router as authentication_test_router
 from .rules.views import router as rules_router
 from .message_moderation.views import router as message_moderation_router
 from .task_response.views import router as task_response_router
+from .healthcheck.views import router as healthcheck_router
 
 router = APIRouter(prefix=settings.api.v1.prefix.router_v1)
 
@@ -54,4 +55,10 @@ router.include_router(
     router=task_response_router,
     tags=settings.api.v1.tags.task_response,
     prefix=settings.api.v1.prefix.task_response,
+)
+
+router.include_router(
+    router=healthcheck_router,
+    tags=settings.api.v1.tags.service,
+    prefix=settings.api.v1.prefix.service,
 )
