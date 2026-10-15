@@ -36,7 +36,6 @@ services:
       - "8000:8000"
     develop:
       watch:
-        # - action: sync+restart
         - action: sync
           path: ./application
           target: /application
@@ -66,6 +65,27 @@ services:
         - action: sync+restart
           path: ./application/core/taskiq
           target: /application/core/taskiq
+
+  tests:
+    restart: no
+    build:
+      dockerfile: ./docker-build/Dockerfile
+      context: ./
+      target: tests
+    depends_on:
+      pg:
+        condition: service_healthy
+    env_file: 
+      *application-common-image-env-list
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./application
+          target: /application
+        - action: rebuild
+          path: ./poetry.lock
+        - action: rebuild
+          path: ./pyproject.toml
 
   pg:
     image: postgres:17.6
