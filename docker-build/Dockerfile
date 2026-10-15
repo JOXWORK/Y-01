@@ -26,3 +26,7 @@ CMD ["./run"]
 FROM base AS worker
 
 CMD ["taskiq", "worker", "core.taskiq.broker:broker", "core.tasks"]
+
+FROM base as tests
+
+CMD ["pytest", "-s"]
