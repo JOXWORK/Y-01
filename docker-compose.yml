@@ -33,7 +33,7 @@ services:
     env_file: 
       *application-common-image-env-list
     healthcheck:
-      test: ["CMD", "python", "utils/executable/app_healthcheck/healthcheck.py"]
+      test: ["CMD", "python", "utils/executable/healthchecks/app.py"]
       interval: 3s
       timeout: 5s
       retries: 5
