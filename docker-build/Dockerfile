@@ -2,6 +2,7 @@ FROM python:3.13.7-trixie AS base
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH="/application"
 
 WORKDIR /application
 
