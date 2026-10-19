@@ -6,7 +6,7 @@ from .moderation_rules.set_moderation_rules import SetModerationRules
 from .moderation_rules.get_moderation_rules import GetModerationRules
 from .message_moderation.send_message_moderation import SendMessageModeration
 from .moderation_rules.delete_moderation_rules import DeleteModerationRules
-
+from .__worker_healthcheck.get_health_state import GetHealthState
 
 __all__ = (
     "for_loop_task_example_task",
@@ -14,4 +14,5 @@ __all__ = (
     "GetModerationRules",
     "SendMessageModeration",
     "DeleteModerationRules",
+    "GetHealthState",
 )
