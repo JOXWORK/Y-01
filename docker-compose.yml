@@ -60,6 +60,12 @@ services:
       - pg
     env_file:
       *application-common-image-env-list
+    healthcheck:
+      test: ["CMD", "python", "utils/executable/healthchecks/worker.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     command: taskiq worker core.taskiq.broker:broker core.tasks
     scale: 1
     develop:
@@ -81,6 +87,8 @@ services:
       pg:
         condition: service_healthy
       app:
+        condition: service_healthy
+      worker:
         condition: service_healthy
     env_file: 
       *application-common-image-env-list
