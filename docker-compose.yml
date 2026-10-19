@@ -34,9 +34,10 @@ services:
       *application-common-image-env-list
     healthcheck:
       test: ["CMD", "python", "utils/executable/healthchecks/app.py"]
-      interval: 3s
+      interval: 30s
       timeout: 5s
-      retries: 5
+      retries: 3
+      start_period: 15s
     ports:
       - "8000:8000"
     develop:
