@@ -65,7 +65,7 @@ services:
       test: ["CMD", "python", "utils/executable/healthchecks/worker.py"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
       start_period: 10s
     command: taskiq worker core.taskiq.broker:broker core.tasks
     scale: 1
