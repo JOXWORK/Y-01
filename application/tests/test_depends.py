@@ -3,9 +3,14 @@ from secrets import token_hex
 from pydantic import BaseModel
 
 
+def generate_username() -> str:
+    return f"test_user_{token_hex(8)}@e.com"
+
+
 class UserCredentials(BaseModel):
     username: str
     password: str
+    is_superuser: bool
 
     @property
     def register(self) -> dict:
@@ -13,7 +18,7 @@ class UserCredentials(BaseModel):
             "email": self.username,
             "password": self.password,
             "is_active": True,
-            "is_superuser": True,
+            "is_superuser": self.is_superuser,
             "is_verified": True,
         }
 
@@ -35,14 +40,18 @@ class URLS(BaseModel):
 class TestDepends(BaseModel):
     __test__ = False
 
-    mixin: str = token_hex(8)
-
-    username: str = f"test_{mixin}@e.com"
     password: str = "qwerty"
 
     user_credentials: UserCredentials = UserCredentials(
-        username=username,
+        username=generate_username(),
         password=password,
+        is_superuser=False,
+    )
+
+    superuser_credentials: UserCredentials = UserCredentials(
+        username=generate_username(),
+        password=password,
+        is_superuser=True,
     )
 
     urls: URLS = URLS()
