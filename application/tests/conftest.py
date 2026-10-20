@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import orjson
 import pytest_asyncio
-from core.models import db_attach
 from httpx import AsyncClient
 
-from .test_depends import test_depends
+from .testing_core.test_depends import test_depends
+
+pytest_plugins = ["tests.testing_core.fixtures"]
 
 
 @pytest_asyncio.fixture
@@ -13,13 +14,6 @@ async def client():
     async with AsyncClient() as client:
         yield client
         await client.aclose()
-
-
-@pytest_asyncio.fixture
-async def session():
-    async with db_attach.session_factory() as session:
-        yield session
-        await db_attach.dispose()
 
 
 @pytest_asyncio.fixture
