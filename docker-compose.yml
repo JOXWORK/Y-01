@@ -68,7 +68,8 @@ services:
       retries: 5
       start_period: 10s
     command: taskiq worker core.taskiq.broker:broker core.tasks
-    scale: 1
+    deploy:
+      replicas: 1
     develop:
       watch:
         - action: sync+restart
