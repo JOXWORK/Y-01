@@ -40,17 +40,15 @@ class URLS(BaseModel):
 class TestDepends(BaseModel):
     __test__ = False
 
-    password: str = "qwerty"
-
     user_credentials: UserCredentials = UserCredentials(
         username=generate_username(),
-        password=password,
+        password=token_hex(),
         is_superuser=False,
     )
 
     superuser_credentials: UserCredentials = UserCredentials(
         username=generate_username(),
-        password=password,
+        password=token_hex(),
         is_superuser=True,
     )
 
