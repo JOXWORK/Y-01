@@ -5,9 +5,7 @@ import pytest_asyncio
 from core.models import db_attach
 from httpx import AsyncClient
 
-from .credentials import credentials
-
-url_root = "http://127.0.0.1:8000/api/v1"
+from .test_depends import test_depends
 
 
 @pytest_asyncio.fixture
@@ -21,22 +19,21 @@ async def client():
 async def session():
     async with db_attach.session_factory() as session:
         yield session
-        print("Dispose")
         await db_attach.dispose()
 
 
 @pytest_asyncio.fixture
 async def auth_header(client: AsyncClient):
     response = await client.post(
-        url=url_root + "/auth/register",
-        json=credentials["register"],
+        url=test_depends.urls.endpoint("/auth/register"),
+        json=test_depends.user_credentials.register,
     )
 
     assert response.status_code == 201
 
     response = await client.post(
-        url=url_root + "/auth/login",
-        data=credentials["login"],
+        url=test_depends.urls.endpoint("/auth/login"),
+        data=test_depends.user_credentials.login,
     )
 
     assert response.status_code == 200
