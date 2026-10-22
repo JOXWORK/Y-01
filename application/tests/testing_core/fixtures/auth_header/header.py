@@ -1,7 +1,8 @@
 import orjson
 import pytest_asyncio
 from httpx import AsyncClient
-from tests.test_depends import test_depends
+
+from tests.testing_core.test_depends import test_depends
 
 
 @pytest_asyncio.fixture
