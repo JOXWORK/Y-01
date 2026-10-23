@@ -226,3 +226,7 @@ stuff
 # Ignore non template env files
 .env.*
 !.env.*.template
+
+# Ignore all files into prototypes dir except .keep file
+application/experimental/*
+!application/experimental/.keep
