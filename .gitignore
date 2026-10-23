@@ -228,5 +228,5 @@ stuff
 !.env.*.template
 
 # Ignore all files into prototypes dir except .keep file
-application/experimental/*
-!application/experimental/.keep
+application/sandbox/*
+!application/sandbox/.keep
