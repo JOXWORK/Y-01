@@ -1,9 +1,15 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import pytest_asyncio
 from core.models.user import User
 from fastapi_users.password import PasswordHelper
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from tests.testing_core.test_depends import test_depends
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
 
 
 @pytest_asyncio.fixture(scope="class", loop_scope="class")
