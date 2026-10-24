@@ -228,5 +228,5 @@ stuff
 !.env.*.template
 
 # Ignore all files into prototypes dir except .keep file
-application/sandbox/*
-!application/sandbox/.keep
+application/sandbox/pystorage/*
+!application/sandbox/pystorage/.keep
