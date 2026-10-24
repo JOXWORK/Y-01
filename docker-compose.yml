@@ -104,6 +104,26 @@ services:
         - action: rebuild
           path: ./pyproject.toml
 
+  sandbox:
+    profiles:
+      - sandbox
+    restart: no
+    build:
+      dockerfile: ./docker-build/Dockerfile
+      context: ./
+      target: sandbox
+    env_file: 
+      *application-common-image-env-list
+    develop:
+      watch:
+        - action: sync
+          path: ./application
+          target: /application
+        - action: rebuild
+          path: ./poetry.lock
+        - action: rebuild
+          path: ./pyproject.toml
+
   pg:
     image: postgres:17.6
     restart: always
