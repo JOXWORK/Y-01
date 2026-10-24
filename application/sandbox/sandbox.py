@@ -10,6 +10,7 @@ def func_main():
         exclude_files = ["sandbox.py"]
         PYFILES = [x for x in SANDBOX_DIR.rglob("*.py") if x.name not in exclude_files]
 
+        print("\n", "-" * 50)
         for index, file in enumerate(PYFILES):
             if file.name == "sandbox.py":
                 continue
