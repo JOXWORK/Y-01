@@ -31,3 +31,11 @@ CMD ["taskiq", "worker", "core.taskiq.broker:broker", "core.tasks"]
 FROM base as tests
 
 CMD ["pytest", "-s"]
+
+FROM base as sandbox
+
+WORKDIR /application/sandbox
+
+RUN chmod +x sandbox run
+
+CMD ["./run"]
