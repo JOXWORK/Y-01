@@ -31,10 +31,14 @@ class UserCredentials(BaseModel):
         }
 
 
-class URLS(BaseModel):
+class URLS(ApiV1Prefix):
     root: str = "http://app:8000/api/v1"
 
-    prefix: ApiV1Prefix = ApiV1Prefix()
+    def model_post_init(self, __context):
+        super().model_post_init(__context)
+
+        for name, body in ApiV1Prefix().model_dump().items():
+            setattr(self, name, lambda endpoint_name, body=body: self.root + body + endpoint_name)
 
     def endpoint(self, endpoint_name: str) -> str:
         return self.root + endpoint_name
