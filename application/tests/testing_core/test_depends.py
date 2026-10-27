@@ -36,16 +36,6 @@ class URLS(BaseModel):
 
     prefix: ApiV1Prefix = ApiV1Prefix()
 
-    def model_post_init(self, __context):
-        super().model_post_init(__context)
-
-        prefix = ApiV1Prefix()
-
-        for name, body in prefix.model_dump().items():
-            setattr(prefix, name, lambda endpoint_name, root=self.root, body=body: root + body + endpoint_name)
-
-        self.prefix = prefix
-
 
 class TestDepends(BaseModel):
     __test__ = False
