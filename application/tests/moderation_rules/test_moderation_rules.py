@@ -1,5 +1,6 @@
 import pytest
 from httpx import AsyncClient
+from tests.testing_core.schemas.task_id_validation import TaskIDValidationSchema
 from tests.testing_core.test_depends import test_depends
 
 
@@ -21,3 +22,5 @@ class TestModerationRules:
         )
 
         assert response.status_code == 200
+
+        TaskIDValidationSchema.model_validate_json(response.content)
