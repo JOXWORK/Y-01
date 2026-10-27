@@ -36,6 +36,9 @@ class URLS(BaseModel):
 
     prefix: ApiV1Prefix = ApiV1Prefix()
 
+    def endpoint(self, endpoint_name: str) -> str:
+        return self.root + endpoint_name
+
 
 class TestDepends(BaseModel):
     __test__ = False
