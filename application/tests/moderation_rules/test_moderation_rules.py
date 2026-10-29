@@ -2,8 +2,6 @@ import asyncio
 
 import pytest
 from api.schemas.v1.api_task_response import APITaskResponseSchema
-
-# from schemas import ModerationRulesValidationSchema
 from core.schemas.moderation_rules import ModerationRulesSchema
 from httpx import AsyncClient
 from pydantic import ValidationError
@@ -12,8 +10,15 @@ from tests.testing_core.test_depends import test_depends
 
 
 @pytest.mark.asyncio(loop_scope="class")
+@pytest.mark.delay(3)
 class TestModerationRules:
-    async def test_create_rules(self, class_db_auth_header: dict, class_httpx_client: AsyncClient, moderation_rules: dict):
+    async def test_create_rules(
+        self,
+        class_db_auth_header: dict,
+        class_httpx_client: AsyncClient,
+        moderation_rules: dict,
+        func_class__async_delay,
+    ):
         response = await class_httpx_client.post(
             url=test_depends.urls.rules("/create"),
             headers=class_db_auth_header,
