@@ -14,6 +14,8 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --no-root
 
+COPY pytest.ini ./
+
 COPY application .
 
 RUN chmod +x entrypoint.sh run
