@@ -1,12 +1,48 @@
+from __future__ import annotations
+
 import asyncio
 
 import pytest
 from api.schemas.v1.api_task_response import APITaskResponseSchema
-from core.schemas.moderation_rules import ModerationRulesSchema
+from api.schemas.v1.task_id import TaskIDSchema
 from httpx import AsyncClient
-from pydantic import ValidationError
-from tests.testing_core.schemas.task_id_validation import TaskIDValidationSchema
+from pydantic import BaseModel, ValidationError
+from tests.testing_core.schemas.rules_validation import RulesValidationSchema
 from tests.testing_core.test_depends import test_depends
+
+
+async def class_task_response_check(
+    class_db_auth_header: dict,
+    class_httpx_client: AsyncClient,
+    response_content: bytes,
+    validation_model: BaseModel,
+    *,
+    retries: int = 3,
+    delay: int = 2,
+):
+    task_id_schema = TaskIDSchema.model_validate_json(response_content)
+
+    for _ in range(retries):
+        response = await class_httpx_client.get(
+            url=test_depends.urls.task_response(f"/get/{task_id_schema.task_id}"),
+            headers=class_db_auth_header,
+        )
+        assert response.status_code == 200
+
+        task_response_schema = APITaskResponseSchema.model_validate_json(response.content)
+        if not task_response_schema.ready:
+            await asyncio.sleep(delay)
+            continue
+        assert task_response_schema.successful
+
+        try:
+            validation_model.model_validate(task_response_schema.content)
+        except ValidationError as exc:
+            pytest.fail(f"Validation by model {validation_model} got error: {exc}")
+
+        return True
+
+    pytest.fail("Task response does not ready too long")
 
 
 @pytest.mark.asyncio(loop_scope="class")
@@ -27,6 +63,8 @@ class TestModerationRules:
 
         assert response.status_code == 200
 
+        #! применить проверку ответа задачи для этого теста, заменив таким образом фикстуру задержки
+
     async def test_get_rules(self, class_db_auth_header: dict, class_httpx_client: AsyncClient):
         response = await class_httpx_client.post(
             url=test_depends.urls.rules("/get"),
@@ -35,31 +73,9 @@ class TestModerationRules:
 
         assert response.status_code == 200
 
-        try:
-            task_id_schema = TaskIDValidationSchema.model_validate_json(response.content)
-        except ValidationError as exc:
-            pytest.fail(f'Ednpoint "/get" response validation error, exc: {exc}')
-
-        for _ in range(3):
-            response = await class_httpx_client.get(
-                url=test_depends.urls.task_response(f"/get/{task_id_schema.task_id}"),
-                headers=class_db_auth_header,
-            )
-
-            assert response.status_code == 200
-
-            try:
-                task_response_schema = APITaskResponseSchema.model_validate_json(response.content)
-            except ValidationError as exc:
-                pytest.fail(f'Ednpoint "/get" response validation error, exc: {exc}')
-
-            if not task_response_schema.ready:
-                await asyncio.sleep(2)
-                continue
-
-            assert task_response_schema.successful
-
-            try:
-                ModerationRulesSchema.model_validate(task_response_schema.content["rules"])
-            except ValidationError as exc:
-                pytest.fail(f'Ednpoint "/get" response validation error, exc: {exc}')
+        await class_task_response_check(
+            class_db_auth_header,
+            class_httpx_client,
+            response_content=response.content,
+            validation_model=RulesValidationSchema,
+        )
