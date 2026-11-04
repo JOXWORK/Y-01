@@ -78,6 +78,9 @@ services:
         - action: sync+restart
           path: ./application/core/taskiq
           target: /application/core/taskiq
+        - action: sync+restart
+          path: ./application/core/task_depends
+          target: /application/core/task_depends
 
   tests:
     restart: no
