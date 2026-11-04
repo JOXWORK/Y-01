@@ -17,7 +17,9 @@ async def getModerationRules(user_id: int) -> dict | None:
         if not moderation_rule:
             return None
 
-        return {
-            "rules": moderation_rule.rules,
-            "rules_numbered": moderation_rule.rules_numbered,
-        }
+        rules = {}
+
+        rules.update(moderation_rule.rules)
+        rules.update(moderation_rule.rules_numbered)
+
+        return rules
