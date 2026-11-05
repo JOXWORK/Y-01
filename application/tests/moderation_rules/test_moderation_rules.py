@@ -36,14 +36,17 @@ async def class_task_response_check(
         assert task_response_schema.successful
 
         task_content = task_response_schema.content
-        if validation_model is not None:
-            try:
-                validation_model.model_validate(task_content)
-            except ValidationError as exc:
-                pytest.fail(f"Validation by model {validation_model} got error: {exc}")
-        else:
+
+        if validation_model is None:
             if task_content is not None:
                 pytest.fail(f"Validation model is None, but task response content does not: {task_content}")
+
+            return True
+
+        try:
+            validation_model.model_validate(task_content)
+        except ValidationError as exc:
+            pytest.fail(f"Validation by model {validation_model} got error: {exc}")
 
         return True
 
