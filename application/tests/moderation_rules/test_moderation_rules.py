@@ -61,7 +61,6 @@ class TestModerationRules:
         class_db_auth_header: dict,
         class_httpx_client: AsyncClient,
         moderation_rules: dict,
-        func_class__async_delay,
     ):
         response = await class_httpx_client.post(
             url=test_depends.urls.rules("/create"),
@@ -70,6 +69,13 @@ class TestModerationRules:
         )
 
         assert response.status_code == 200
+
+        await class_task_response_check(
+            class_db_auth_header,
+            class_httpx_client,
+            response_content=response.content,
+            validation_model=None,
+        )
 
     async def test_get_rules(self, class_db_auth_header: dict, class_httpx_client: AsyncClient):
         response = await class_httpx_client.post(
