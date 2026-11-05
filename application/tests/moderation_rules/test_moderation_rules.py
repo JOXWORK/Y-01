@@ -15,7 +15,7 @@ async def class_task_response_check(
     class_db_auth_header: dict,
     class_httpx_client: AsyncClient,
     response_content: bytes,
-    validation_model: BaseModel,
+    validation_model: BaseModel | None = None,
     *,
     retries: int = 3,
     delay: int = 2,
@@ -35,10 +35,15 @@ async def class_task_response_check(
             continue
         assert task_response_schema.successful
 
-        try:
-            validation_model.model_validate(task_response_schema.content)
-        except ValidationError as exc:
-            pytest.fail(f"Validation by model {validation_model} got error: {exc}")
+        task_content = task_response_schema.content
+        if validation_model is not None:
+            try:
+                validation_model.model_validate(task_content)
+            except ValidationError as exc:
+                pytest.fail(f"Validation by model {validation_model} got error: {exc}")
+        else:
+            if task_content is not None:
+                pytest.fail(f"Validation model is None, but task response content does not: {task_content}")
 
         return True
 
