@@ -7,7 +7,7 @@ from api.schemas.v1.api_task_response import APITaskResponseSchema
 from api.schemas.v1.task_id import TaskIDSchema
 from httpx import AsyncClient
 from pydantic import BaseModel, ValidationError
-from tests.testing_core.schemas.rules_validation import RulesValidationSchema
+from tests.testing_core.schemas.validation.rules import RulesValidationSchema
 from tests.testing_core.test_depends import test_depends
 
 
@@ -62,8 +62,6 @@ class TestModerationRules:
         )
 
         assert response.status_code == 200
-
-        #! применить проверку ответа задачи для этого теста, заменив таким образом фикстуру задержки
 
     async def test_get_rules(self, class_db_auth_header: dict, class_httpx_client: AsyncClient):
         response = await class_httpx_client.post(
