@@ -207,7 +207,7 @@ class RateLimitSettings(BaseModel):
     )
 
     task_response: RateLimitEndpoint = RateLimitEndpoint(
-        limit=5,
+        limit=20,
         timeout_sec=5,
     )
 
