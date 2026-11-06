@@ -23,6 +23,7 @@ async def class_task_response_check(
     *,
     retries: int = 3,
     delay: int = 2,
+    unsuccessful_ok: bool = False,
 ):
     task_id_schema = TaskIDSchema.model_validate_json(response_content)
 
@@ -37,7 +38,9 @@ async def class_task_response_check(
         if not task_response_schema.ready:
             await asyncio.sleep(delay)
             continue
-        assert task_response_schema.successful
+
+        if not unsuccessful_ok:
+            assert task_response_schema.successful
 
         task_content = task_response_schema.content
 
