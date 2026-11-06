@@ -45,13 +45,11 @@ async def class_task_response_check(
             if task_content is not None:
                 pytest.fail(f"Validation model is None, but task response content does not: {task_content}")
 
-            return True
+            return
 
         try:
-            validation_model.model_validate(task_content)
+            return validation_model.model_validate(task_content)
         except ValidationError as exc:
             pytest.fail(f"Validation by model {validation_model} got error: {exc}")
-
-        return True
 
     pytest.fail("Task response does not ready too long")
