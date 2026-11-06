@@ -53,3 +53,20 @@ class TestModerationRules:
             response_content=response.content,
             validation_model=RulesValidationSchema,
         )
+
+    async def test_delete_rules(
+        self,
+        class_db_auth_header: dict,
+        class_httpx_client: AsyncClient,
+    ):
+        response = await class_httpx_client.delete(
+            test_depends.urls.rules("/delete"),
+            headers=class_db_auth_header,
+        )
+
+        await class_task_response_check(
+            class_db_auth_header,
+            class_httpx_client,
+            response_content=response.content,
+            validation_model=None,
+        )
