@@ -3,8 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
+from core.taskiq.task_messages import TaskResponseMessages
 from tests.testing_core.additional_checks.task_response import class_task_response_check
 from tests.testing_core.schemas.validation.rules import RulesValidationSchema
+from tests.testing_core.schemas.validation.task_message import TaskMessageValidationSchema
 from tests.testing_core.test_depends import test_depends
 
 if TYPE_CHECKING:
@@ -54,7 +56,7 @@ class TestModerationRules:
             validation_model=RulesValidationSchema,
         )
 
-    async def test_delete_rules(
+    async def test_delete_rules_1(
         self,
         class_db_auth_header: dict,
         class_httpx_client: AsyncClient,
@@ -70,3 +72,23 @@ class TestModerationRules:
             response_content=response.content,
             validation_model=None,
         )
+
+    async def test_delete_rules_2(
+        self,
+        class_db_auth_header: dict,
+        class_httpx_client: AsyncClient,
+    ):
+        response = await class_httpx_client.delete(
+            test_depends.urls.rules("/delete"),
+            headers=class_db_auth_header,
+        )
+
+        content = await class_task_response_check(
+            class_db_auth_header,
+            class_httpx_client,
+            response_content=response.content,
+            validation_model=TaskMessageValidationSchema,
+            unsuccessful_ok=True,
+        )
+
+        assert content.message == TaskResponseMessages.RULES_NOT_FOUND
