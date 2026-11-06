@@ -28,7 +28,6 @@ async def DeleteModerationRules(user_id: int) -> TaskResponseSchema:
                 response.successful = True
             else:
                 response.content = create_message(message=TaskResponseMessages.RULES_NOT_FOUND)
-
     except SQLAlchemyError:
         logger.enum_error(TaskExceptionMessages.SQLALCHEMY_EXCEPTION)
 
