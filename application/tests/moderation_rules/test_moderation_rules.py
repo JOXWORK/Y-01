@@ -56,7 +56,7 @@ class TestModerationRules:
             validation_model=RulesValidationSchema,
         )
 
-    async def test_delete_rules_1(
+    async def test_delete_rules(
         self,
         class_db_auth_header: dict,
         class_httpx_client: AsyncClient,
