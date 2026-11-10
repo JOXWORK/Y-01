@@ -7,23 +7,22 @@ from core.taskiq.task_messages import TaskResponseMessages
 from tests.testing_core.additional_checks.task_response import class_task_response_check
 from tests.testing_core.schemas.validation.rules import RulesValidationSchema
 from tests.testing_core.schemas.validation.task_message import TaskMessageValidationSchema
-from tests.testing_core.test_depends import test_depends
 
 if TYPE_CHECKING:
     from httpx import AsyncClient
 
 
 @pytest.mark.asyncio(loop_scope="class")
-@pytest.mark.delay(3)
 class TestModerationRules:
     async def test_create_rules(
         self,
         class_db_auth_header: dict,
         class_httpx_client: AsyncClient,
         moderation_rules: dict,
+        url_rules,
     ):
         response = await class_httpx_client.post(
-            url=test_depends.urls.rules("/create"),
+            url=url_rules.create,
             headers=class_db_auth_header,
             json=moderation_rules,
         )
@@ -41,9 +40,10 @@ class TestModerationRules:
         self,
         class_db_auth_header: dict,
         class_httpx_client: AsyncClient,
+        url_rules,
     ):
         response = await class_httpx_client.post(
-            url=test_depends.urls.rules("/get"),
+            url=url_rules.get,
             headers=class_db_auth_header,
         )
 
@@ -60,9 +60,10 @@ class TestModerationRules:
         self,
         class_db_auth_header: dict,
         class_httpx_client: AsyncClient,
+        url_rules,
     ):
         response = await class_httpx_client.delete(
-            test_depends.urls.rules("/delete"),
+            url=url_rules.delete,
             headers=class_db_auth_header,
         )
 
@@ -77,9 +78,10 @@ class TestModerationRules:
         self,
         class_db_auth_header: dict,
         class_httpx_client: AsyncClient,
+        url_rules,
     ):
         response = await class_httpx_client.delete(
-            test_depends.urls.rules("/delete"),
+            url=url_rules.delete,
             headers=class_db_auth_header,
         )
 
