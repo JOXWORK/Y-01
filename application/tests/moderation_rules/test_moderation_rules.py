@@ -94,3 +94,24 @@ class TestModerationRules:
         )
 
         assert content.message == TaskResponseMessages.RULES_NOT_FOUND
+
+    async def test_get_rules_after_delete(
+        self,
+        class_db_auth_header: dict,
+        class_httpx_client: AsyncClient,
+        url_rules,
+    ):
+        response = await class_httpx_client.post(
+            url=url_rules.get,
+            headers=class_db_auth_header,
+        )
+
+        content = await class_task_response_check(
+            class_db_auth_header,
+            class_httpx_client,
+            response_content=response.content,
+            validation_model=TaskMessageValidationSchema,
+            unsuccessful_ok=True,
+        )
+
+        assert content.message == TaskResponseMessages.RULES_NOT_FOUND
