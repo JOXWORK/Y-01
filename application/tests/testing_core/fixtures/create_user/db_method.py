@@ -24,7 +24,7 @@ async def class_db_user(class_session: AsyncSession):
     class_session.add(user)
     await class_session.commit()
 
-    yield
+    yield user
 
     await class_session.delete(user)
     await class_session.commit()
