@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 @pytest_asyncio.fixture(scope="class", loop_scope="class")
-async def class_create_db_user(class_session: AsyncSession):
+async def class_db_user(class_session: AsyncSession):
     user_credentials = test_depends.user_credentials.register
 
     password = user_credentials.pop("password")

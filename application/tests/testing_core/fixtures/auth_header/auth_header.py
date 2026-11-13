@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 @pytest_asyncio.fixture(scope="class", loop_scope="class")
-async def class_db_auth_header(class_create_db_user: AsyncSession, class_httpx_client: AsyncClient):
+async def class_db_auth_header(class_db_user: AsyncSession, class_httpx_client: AsyncClient):
     response = await class_httpx_client.post(
         url=test_depends.urls.endpoint("/auth/login"),
         data=test_depends.user_credentials.login,
