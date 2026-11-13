@@ -3,8 +3,7 @@ from core.tasks.moderation_rules.get_moderation_rules import GetModerationRules
 from core.tasks.moderation_rules.set_moderation_rules import SetModerationRules
 
 from api.schemas.v1.task_id import TaskIDSchema
-
-from .service.numerate_dict import numerate_dict
+from api.service.rules.numerate_dict import numerate_dict
 
 
 async def create_rules(user_id: int, rules: dict) -> TaskIDSchema:
