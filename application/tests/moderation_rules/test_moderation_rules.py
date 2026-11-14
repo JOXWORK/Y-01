@@ -14,27 +14,28 @@ if TYPE_CHECKING:
 
 @pytest.mark.asyncio(loop_scope="class")
 class TestModerationRules:
-    # async def test_create_rules(
-    #     self,
-    #     class_db_auth_header: dict,
-    #     class_httpx_client: AsyncClient,
-    #     moderation_rules: dict,
-    #     url_rules,
-    # ):
-    #     response = await class_httpx_client.post(
-    #         url=url_rules.create,
-    #         headers=class_db_auth_header,
-    #         json=moderation_rules,
-    #     )
+    async def test_create_rules(
+        self,
+        class_db_auth_header: dict,
+        class_httpx_client: AsyncClient,
+        moderation_rules: dict,
+        url_rules,
+        class_db_delete_rules,
+    ):
+        response = await class_httpx_client.post(
+            url=url_rules.create,
+            headers=class_db_auth_header,
+            json=moderation_rules,
+        )
 
-    #     assert response.status_code == 200
+        assert response.status_code == 200
 
-    #     await class_task_response_check(
-    #         class_db_auth_header,
-    #         class_httpx_client,
-    #         response_content=response.content,
-    #         validation_model=None,
-    #     )
+        await class_task_response_check(
+            class_db_auth_header,
+            class_httpx_client,
+            response_content=response.content,
+            validation_model=None,
+        )
 
     @pytest.mark.delete_rules(True)
     async def test_get_rules(
