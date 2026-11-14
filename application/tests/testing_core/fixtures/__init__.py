@@ -5,6 +5,7 @@ paths = [
     "create_user.db_method",
     "async_delay.async_delay",
     "urls.rules",
+    "rules.create",
 ]
 
 pytest_plugins = list(["tests.testing_core.fixtures." + path for path in paths])
