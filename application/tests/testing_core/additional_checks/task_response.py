@@ -1,30 +1,27 @@
-from __future__ import annotations
-
 import asyncio
-from typing import TYPE_CHECKING
+from typing import TypeVar
 
 import pytest
 from api.schemas.v1.api_task_response import APITaskResponseSchema
 from api.schemas.v1.task_id import TaskIDSchema
-from pydantic import ValidationError
+from httpx import AsyncClient
+from pydantic import BaseModel, ValidationError
 
 from tests.testing_core.test_depends import test_depends
 
-if TYPE_CHECKING:
-    from httpx import AsyncClient
-    from pydantic import BaseModel
+TP_SCHEMA = TypeVar("VAL_SCHEMA", bound=BaseModel)
 
 
 async def class_task_response_check(
     class_db_auth_header: dict,
     class_httpx_client: AsyncClient,
     response_content: bytes,
-    validation_model: BaseModel | None = None,
+    validation_model: type[TP_SCHEMA] = None,
     *,
     retries: int = 3,
     delay: int = 2,
     unsuccessful_ok: bool = False,
-):
+) -> TP_SCHEMA:
     task_id_schema = TaskIDSchema.model_validate_json(response_content)
 
     for _ in range(retries):
