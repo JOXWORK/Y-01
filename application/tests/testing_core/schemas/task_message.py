@@ -1,5 +1,5 @@
 from pydantic import BaseModel
 
 
-class TaskMessageValidationSchema(BaseModel):
+class TaskMessageSchema(BaseModel):
     message: str

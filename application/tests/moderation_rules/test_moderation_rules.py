@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 import pytest
 from core.taskiq.task_messages import TaskResponseMessages
 from tests.testing_core.additional_checks.task_response import class_task_response_check
-from tests.testing_core.schemas.validation.rules import RulesValidationSchema
-from tests.testing_core.schemas.validation.task_message import TaskMessageValidationSchema
+from tests.testing_core.schemas.rules import RulesSchema
+from tests.testing_core.schemas.task_message import TaskMessageSchema
 
 if TYPE_CHECKING:
     from httpx import AsyncClient
@@ -56,7 +56,7 @@ class TestModerationRules:
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,
-            validation_model=RulesValidationSchema,
+            validation_model=RulesSchema,
         )
 
     async def test_delete_rules(
@@ -97,7 +97,7 @@ class TestModerationRules:
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,
-            validation_model=TaskMessageValidationSchema,
+            validation_model=TaskMessageSchema,
             unsuccessful_ok=True,
         )
 
@@ -120,7 +120,7 @@ class TestModerationRules:
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,
-            validation_model=TaskMessageValidationSchema,
+            validation_model=TaskMessageSchema,
             unsuccessful_ok=True,
         )
 
