@@ -31,6 +31,8 @@ class TestModerationRules:
             validation_model=None,
         )
 
+        #! Написать продолжение теста с запросом созданных правил для проверки create endpoint
+
     @pytest.mark.delete_rules(True)
     async def test_get_rules(
         self,
