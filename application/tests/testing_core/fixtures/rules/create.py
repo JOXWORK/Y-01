@@ -5,6 +5,8 @@ from core.models.user import User
 from core.tasks.moderation_rules.delete_moderation_rules import DeleteModerationRules
 from core.tasks.moderation_rules.set_moderation_rules import SetModerationRules
 
+from tests.testing_core.schemas.rules import RulesSchema
+
 
 @pytest.fixture(scope="class")
 def moderation_rules():
@@ -19,6 +21,11 @@ def moderation_rules():
             "запрещена реклама игорных сервисов": "ban",
         }
     }
+
+
+@pytest.fixture(scope="class")
+def rules_model():
+    return RulesSchema()
 
 
 @pytest_asyncio.fixture(scope="function", loop_scope="class")
