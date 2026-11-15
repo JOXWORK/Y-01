@@ -1,6 +1,5 @@
 import pytest
 import pytest_asyncio
-from api.service.rules.numerate_dict import numerate_dict
 from core.models.user import User
 from core.tasks.moderation_rules.delete_moderation_rules import DeleteModerationRules
 from core.tasks.moderation_rules.set_moderation_rules import SetModerationRules
@@ -32,17 +31,15 @@ def rules_model():
 async def class_db_rules(
     request,
     class_db_user: User,
-    moderation_rules: dict,
+    rules_model: RulesSchema,
 ):
     delete_marker = request.node.get_closest_marker("delete_rules")
-
     user_id = class_db_user.id
 
-    rules_numbered = numerate_dict(rules=moderation_rules)
     create_task_response = await SetModerationRules(
         user_id=user_id,
-        rules=moderation_rules,
-        rules_numbered=rules_numbered,
+        rules=rules_model.rules,
+        rules_numbered=rules_model.rules_numbered,
     )
     assert create_task_response.successful
 
