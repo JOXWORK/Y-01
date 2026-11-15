@@ -13,4 +13,4 @@ class RulesSchema(BaseModel):
         "запрещена реклама игорных сервисов": "ban",
     }
 
-    rules_numbered: dict[str, dict[str, str]] = numerate_dict({"rules": rules})
+    rules_numbered: dict[str, dict[str, str]] = numerate_dict({"rules": rules}).pop("rules_numbered")
