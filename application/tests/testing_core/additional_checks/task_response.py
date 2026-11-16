@@ -50,6 +50,6 @@ async def class_task_response_check(
         try:
             return validation_model.model_validate(task_content)
         except ValidationError as exc:
-            pytest.fail(f"Validation by model {validation_model} got error: {exc}")
+            pytest.fail(f"Validation by model {validation_model} with response content: {task_content} got error: {exc}")
 
     pytest.fail("Task response does not ready too long")
