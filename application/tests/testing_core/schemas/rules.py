@@ -1,8 +1,10 @@
 from api.service.rules.numerate_dict import numerate_dict
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class RulesSchema(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     rules: dict[str, str] = {
         "запрещена реклама": "ban",
         "запрещен спам": "mute",
