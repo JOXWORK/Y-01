@@ -6,6 +6,6 @@ def numerate_dict(rules: dict) -> dict:
         rule = items[0]
         action = items[1]
 
-        numbered_rule_dict.update({index: {rule: action}})
+        numbered_rule_dict.update({str(index): {rule: action}})
 
     return numbered_rule_dict
