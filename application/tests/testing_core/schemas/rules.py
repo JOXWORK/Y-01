@@ -15,7 +15,7 @@ class RULES_ENUM(Enum):
         "запрещена реклама игорных сервисов": "ban",
     }
 
-    RULES_NUMBERED = numerate_dict({"rules": RULES}).pop("rules_numbered")
+    RULES_NUMBERED = numerate_dict(RULES)
 
 
 class RulesSchema(BaseModel):
@@ -35,8 +35,8 @@ class RulesSchema(BaseModel):
             if rules == rules_numbered is None:
                 return data
 
-            assert rules == RULES_ENUM.RULES
-            assert rules_numbered == RULES_ENUM.RULES_NUMBERED
+            assert rules == RULES_ENUM.RULES.value
+            assert rules_numbered == RULES_ENUM.RULES_NUMBERED.value
 
             return data
 
