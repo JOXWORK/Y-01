@@ -1,5 +1,5 @@
 from core.schemas.task_response import TaskResponseSchema
-from core.task_depends.get_moderation_rules import getModerationRules
+from core.task_depends.db_select_rules import getRules
 from core.taskiq.broker import broker
 from core.taskiq.except_messages import TaskExceptionMessages
 from core.taskiq.task_logger import get_task_logger
@@ -13,7 +13,7 @@ logger = get_task_logger()
 async def GetModerationRules(user_id: int) -> TaskResponseSchema:
     response = TaskResponseSchema(successful=False, content=None)
     try:
-        moderation_rules = await getModerationRules(user_id)
+        moderation_rules = await getRules(user_id)
 
         if moderation_rules:
             content = {}

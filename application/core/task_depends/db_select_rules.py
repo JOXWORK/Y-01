@@ -7,7 +7,7 @@ from core.taskiq.task_logger import get_task_logger
 logger = get_task_logger()
 
 
-async def getModerationRules(user_id: int) -> dict | None:
+async def getRules(user_id: int) -> dict | None:
     async with db_attach.session_factory() as session:
         query = select(ModerationRule).where(ModerationRule.user_id == user_id)
         sqla_result = await session.execute(query)

@@ -4,7 +4,7 @@ from core.openai_client.client import openai_client
 from core.promts.message_moderation import system_promt
 from core.schemas.moderation_response import ModerationLLMResponseSchema
 from core.schemas.task_response import TaskResponseSchema
-from core.task_depends.get_moderation_rules import getModerationRules
+from core.task_depends.db_select_rules import getRules
 from core.taskiq.broker import broker
 from core.taskiq.except_messages import TaskExceptionMessages
 from core.taskiq.task_logger import get_task_logger
@@ -38,7 +38,7 @@ async def SendMessageModeration(
     response = TaskResponseSchema(successful=False, content=None)
 
     try:
-        moderation_rules = await getModerationRules(user_id)
+        moderation_rules = await getRules(user_id)
 
         if moderation_rules:
             rules = moderation_rules["rules_numbered"]
