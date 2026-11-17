@@ -2,6 +2,7 @@ from sqlalchemy import select
 
 from core.models.db_attach import db_attach
 from core.models.moderation_rule import ModerationRule
+from core.schemas.moderation_rules import RulesSchema
 from core.taskiq.task_logger import get_task_logger
 
 logger = get_task_logger()
@@ -17,9 +18,11 @@ async def getRules(user_id: int) -> dict | None:
         if not moderation_rule:
             return None
 
-        rules = {}
-
-        rules.update(moderation_rule.rules)
-        rules.update(moderation_rule.rules_numbered)
+        rules = RulesSchema.model_validate(
+            {
+                "rules": moderation_rule.rules,
+                "rules_numbered": moderation_rule.rules_numbered,
+            }
+        )
 
         return rules
