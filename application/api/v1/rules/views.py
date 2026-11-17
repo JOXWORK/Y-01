@@ -28,7 +28,7 @@ async def moderation_rules_create(
 ) -> TaskIDSchema:
     return await crud.create_rules(
         user_id=user.id,
-        rules=rules_schema.model_dump(),
+        rules=rules_schema.model_dump().pop("rules"),
     )
 
 

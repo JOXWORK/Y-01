@@ -6,7 +6,7 @@ from api.schemas.v1.task_id import TaskIDSchema
 from api.service.rules.numerate_dict import numerate_dict
 
 
-async def create_rules(user_id: int, rules: dict) -> TaskIDSchema:
+async def create_rules(user_id: int, rules: dict[str, str]) -> TaskIDSchema:
     rules_numbered = numerate_dict(rules)
 
     task = await SetModerationRules.kiq(

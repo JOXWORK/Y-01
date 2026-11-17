@@ -1,5 +1,5 @@
 def numerate_dict(rules: dict) -> dict:
-    rule_dict = rules["rules"]
+    rule_dict = rules
     numbered_rule_dict = {}
 
     for index, items in enumerate(rule_dict.items()):
@@ -8,4 +8,4 @@ def numerate_dict(rules: dict) -> dict:
 
         numbered_rule_dict.update({index: {rule: action}})
 
-    return {"rules_numbered": numbered_rule_dict}
+    return numbered_rule_dict
