@@ -1,9 +1,17 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import pytest
 from core.taskiq.task_messages import TaskResponseMessages
-from httpx import AsyncClient
 from tests.testing_core.additional_checks.task_response import class_task_response_check
 from tests.testing_core.schemas.rules import RulesSchema
 from tests.testing_core.schemas.task_message import TaskMessageSchema
+from tests.testing_core.unit_helpers.rules.get_db import get_db_rules
+
+if TYPE_CHECKING:
+    from core.models.user import User
+    from httpx import AsyncClient
 
 
 @pytest.mark.asyncio(loop_scope="class")
@@ -14,6 +22,7 @@ class TestModerationRules:
         class_httpx_client: AsyncClient,
         rules_model: RulesSchema,
         url_rules,
+        class_db_user: User,
         class_db_delete_rules,
     ):
         response = await class_httpx_client.post(
@@ -31,7 +40,7 @@ class TestModerationRules:
             validation_model=None,
         )
 
-        #! Написать продолжение теста с запросом созданных правил для проверки create endpoint
+        await get_db_rules(class_db_user.id)
 
     @pytest.mark.delete_rules(True)
     async def test_get_rules(
