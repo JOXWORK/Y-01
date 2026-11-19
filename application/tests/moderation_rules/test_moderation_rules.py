@@ -42,6 +42,21 @@ class TestModerationRules:
 
         await get_db_rules(class_db_user.id)
 
+    async def test_create_rules_with_wrong_json_data(
+        self,
+        class_db_auth_header: dict,
+        class_httpx_client: AsyncClient,
+        rules_model: RulesSchema,
+        url_rules,
+    ):
+        response = await class_httpx_client.post(
+            url=url_rules.create,
+            headers=class_db_auth_header,
+            json={"rules1": rules_model.rules},
+        )
+
+        assert response.status_code == 422
+
     @pytest.mark.delete_rules(True)
     async def test_get_rules(
         self,
