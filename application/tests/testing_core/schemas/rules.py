@@ -18,7 +18,12 @@ class RULES_ENUM(Enum):
     RULES_NUMBERED = numerate_dict(RULES)
 
 
-class RulesSchema(BaseModel):
+class RulesModel(BaseModel):
+    rules: dict[str, str] = RULES_ENUM.RULES.value
+    rules_numbered: dict[str, dict[str, str]] = RULES_ENUM.RULES_NUMBERED.value
+
+
+class RulesValidationSchema(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     rules: dict[str, str] = RULES_ENUM.RULES.value
@@ -32,12 +37,11 @@ class RulesSchema(BaseModel):
             rules = data.get("rules")
             rules_numbered = data.get("rules_numbered")
 
-            if rules == rules_numbered is None:
-                return data
-
-            assert rules == RULES_ENUM.RULES.value
-            assert rules_numbered == RULES_ENUM.RULES_NUMBERED.value
+            if rules != RULES_ENUM.RULES.value:
+                raise ValueError(f"Input rules is not compare installed rules [input={rules}]")
+            if rules_numbered != RULES_ENUM.RULES_NUMBERED.value:
+                raise ValueError(f"Input numbered rules is not compare installed numbered rules [input={rules_numbered}]")
 
             return data
 
-        return data
+        raise ValueError("Input data should be a dicatonary type")
