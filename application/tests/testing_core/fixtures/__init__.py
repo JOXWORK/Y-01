@@ -7,6 +7,7 @@ paths = [
     "urls.rules",
     "rules.create",
     "rules.delete",
+    "dispose_engine.dispose",
 ]
 
 pytest_plugins = list(["tests.testing_core.fixtures." + path for path in paths])
