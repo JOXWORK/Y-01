@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 import pytest
 from negative_test import NegativeModerationRulesTest
-from tests.testing_core.additional_checks.task_response import class_task_response_check
 from tests.testing_core.schemas.rules import RulesSchema
 from tests.testing_core.unit_helpers.rules.get_db import get_db_rules
+from tests.testing_core.unit_helpers.task_response.validation import task_response_validate
 
 if TYPE_CHECKING:
     from core.models.user import User
@@ -32,7 +32,7 @@ class TestModerationRules(NegativeModerationRulesTest):
 
         assert response.status_code == 200
 
-        await class_task_response_check(
+        await task_response_validate(
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,
@@ -56,7 +56,7 @@ class TestModerationRules(NegativeModerationRulesTest):
 
         assert response.status_code == 200
 
-        await class_task_response_check(
+        await task_response_validate(
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,
@@ -79,7 +79,7 @@ class TestModerationRules(NegativeModerationRulesTest):
 
         assert response.status_code == 200
 
-        await class_task_response_check(
+        await task_response_validate(
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,

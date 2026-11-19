@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from core.taskiq.task_messages import TaskResponseMessages
-from tests.testing_core.additional_checks.task_response import class_task_response_check
 from tests.testing_core.schemas.task_message import TaskMessageSchema
+from tests.testing_core.unit_helpers.task_response.validation import task_response_validate
 
 if TYPE_CHECKING:
     from httpx import AsyncClient
@@ -40,7 +40,7 @@ class NegativeModerationRulesTest:
 
         assert response.status_code == 200
 
-        content = await class_task_response_check(
+        content = await task_response_validate(
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,
@@ -63,7 +63,7 @@ class NegativeModerationRulesTest:
 
         assert response.status_code == 200
 
-        content = await class_task_response_check(
+        content = await task_response_validate(
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,
