@@ -12,7 +12,7 @@ from tests.testing_core.test_depends import test_depends
 TP_SCHEMA = TypeVar("VAL_SCHEMA", bound=BaseModel)
 
 
-async def class_task_response_check(
+async def task_response_validate(
     class_db_auth_header: dict,
     class_httpx_client: AsyncClient,
     response_content: bytes,
