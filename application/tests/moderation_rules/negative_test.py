@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from core.taskiq.task_messages import TaskResponseMessages
 from tests.testing_core.schemas.task_message import TaskMessageSchema
-from tests.testing_core.unit_helpers.task_response.validation import task_response_validate
+from tests.testing_core.unit_helpers.validation.task_response import task_response_validate
 
 if TYPE_CHECKING:
     from httpx import AsyncClient

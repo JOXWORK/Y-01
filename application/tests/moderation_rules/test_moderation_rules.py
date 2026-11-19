@@ -6,7 +6,7 @@ import pytest
 from negative_test import NegativeModerationRulesTest
 from tests.testing_core.schemas.rules import RulesSchema
 from tests.testing_core.unit_helpers.rules.get_db import get_db_rules
-from tests.testing_core.unit_helpers.task_response.validation import task_response_validate
+from tests.testing_core.unit_helpers.validation.task_response import task_response_validate
 
 if TYPE_CHECKING:
     from core.models.user import User
