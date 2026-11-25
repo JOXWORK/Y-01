@@ -1,10 +1,20 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import AsyncGenerator
+
+    from core.models.user import User
+    from core.schemas.task_response import TaskResponseSchema
+
+
 import pytest
 import pytest_asyncio
-from core.models.user import User
 from core.tasks.moderation_rules.delete_moderation_rules import DeleteModerationRules
 from core.tasks.moderation_rules.set_moderation_rules import SetModerationRules
 
-from tests.testing_core.schemas.rules import RulesSchema
+from tests.testing_core.schemas.rules import RulesModel
 
 
 @pytest.fixture(scope="class")
@@ -24,15 +34,15 @@ def moderation_rules():
 
 @pytest.fixture(scope="class")
 def rules_model():
-    return RulesSchema()
+    return RulesModel()
 
 
 @pytest_asyncio.fixture(scope="function", loop_scope="class")
 async def class_db_rules(
     request,
     class_db_user: User,
-    rules_model: RulesSchema,
-):
+    rules_model: RulesModel,
+) -> AsyncGenerator[TaskResponseSchema]:
     delete_marker = request.node.get_closest_marker("delete_rules")
     user_id = class_db_user.id
 
