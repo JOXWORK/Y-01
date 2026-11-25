@@ -26,8 +26,8 @@ class RulesModel(BaseModel):
 class RulesValidationSchema(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    rules: dict[str, str] = RULES_ENUM.RULES.value
-    rules_numbered: dict[str, dict[str, str]] = RULES_ENUM.RULES_NUMBERED.value
+    rules: dict[str, str]
+    rules_numbered: dict[str, dict[str, str]]
 
     @model_validator(mode="before")
     @classmethod
@@ -45,3 +45,6 @@ class RulesValidationSchema(BaseModel):
             return data
 
         raise ValueError("Input data should be a dicatonary type")
+
+
+#! проверить валидацию данных схемой
