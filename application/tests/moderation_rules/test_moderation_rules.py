@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from negative_test import NegativeModerationRulesTest
-from tests.testing_core.schemas.rules import RulesSchema
+from tests.testing_core.schemas.rules import RulesModel, RulesValidationSchema
 from tests.testing_core.unit_helpers.rules.get_db import get_db_rules
 from tests.testing_core.unit_helpers.validation.task_response import task_response_validate
 
@@ -19,7 +19,7 @@ class TestModerationRules(NegativeModerationRulesTest):
         self,
         class_db_auth_header: dict,
         class_httpx_client: AsyncClient,
-        rules_model: RulesSchema,
+        rules_model: RulesModel,
         url_rules,
         class_db_user: User,
         class_db_delete_rules,
@@ -36,7 +36,7 @@ class TestModerationRules(NegativeModerationRulesTest):
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,
-            validation_model=None,
+            validation_model=None,  #! рассмотреть возможность применения владиционной схемы правил для провреки корректности полученных правил
         )
 
         await get_db_rules(class_db_user.id)
@@ -60,7 +60,7 @@ class TestModerationRules(NegativeModerationRulesTest):
             class_db_auth_header,
             class_httpx_client,
             response_content=response.content,
-            validation_model=RulesSchema,
+            validation_model=RulesValidationSchema,
         )
 
         #! написать additional check на наличие в бд записи с правилами

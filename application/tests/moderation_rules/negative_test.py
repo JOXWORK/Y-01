@@ -8,7 +8,7 @@ from tests.testing_core.unit_helpers.validation.task_response import task_respon
 
 if TYPE_CHECKING:
     from httpx import AsyncClient
-    from tests.testing_core.schemas.rules import RulesSchema
+    from tests.testing_core.schemas.rules import RulesModel
 
 
 class NegativeModerationRulesTest:
@@ -16,7 +16,7 @@ class NegativeModerationRulesTest:
         self,
         class_db_auth_header: dict,
         class_httpx_client: AsyncClient,
-        rules_model: RulesSchema,
+        rules_model: RulesModel,
         url_rules,
     ):
         response = await class_httpx_client.post(
